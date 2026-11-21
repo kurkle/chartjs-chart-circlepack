@@ -63,7 +63,7 @@ Two Chart.js behaviours that have caused bugs in the sibling packages apply here
 *Alternatives:* a second chart type inside the treemap package (dropped, see Context); depending on the treemap package (its internals would become public API); a shared core package (a third package to release).
 
 **D2. No scales.** The chart area in pixels is the layout space; the controller's `linkScales()` is empty, as the doughnut controller's is.
-*Alternative:* hidden linear scales as in the treemap, which make the zoom plugin work. They bring the configure-ordering workarounds the treemap needs and the question of what a circle is under one-axis zoom, for something the request never mentions. Adding scales later does not change the API. This is open question Q1.
+*Alternative:* hidden linear scales as in the treemap, which make the zoom plugin work. They bring the configure-ordering workarounds the treemap needs and the question of what a circle is under one-axis zoom, for something the request never mentions. Adding scales later does not change the API.
 
 **D3. The parsed node is `{ v, x, y, r }`**: the value, the centre in canvas pixels, and the packed radius before the spacing inset. Node `i`, element `i` and row `i` share one index; packing largest-first never reorders them. Element properties are `x`, `y`, `radius`, which Chart.js animates by default.
 
@@ -79,7 +79,7 @@ It runs directly after the packing and layout pieces, so that its test measures 
 
 **D7. Spacing is an inset.** Each circle is drawn with radius `r − spacing`, so tangent neighbours are `2 × spacing` apart, exactly, at no cost to the layout. Negative spacing overlaps neighbours and may reach outside the area. A circle whose drawn radius is not positive is neither drawn nor hit. The default is 0: circles touch. Nothing is drawn outside the chart area: the controller clips to it, which also bounds a negative spacing and a circle a region pushes to the edge.
 
-**D8. `borderWidth` is drawn inside the edge**, so borders never change the layout and neighbours still touch at the outer edge. It is scriptable like the colours, since nothing in the layout reads it. A value that is not a number counts as 0.
+**D8. `borderWidth` is drawn inside the edge**, so borders never change the layout and neighbours still touch at the outer edge. It is scriptable like the colours, since nothing in the layout reads it. A value that is not a number counts as 0. The default is 1 (D18).
 
 **D9. Labels: centred, and only where they fit.** Options under `labels`: `display` (scriptable, so one circle's label can be hidden), `formatter` (returns a string or an array of lines; receives the scriptable context), `color`, `font`, `padding` (default 3). The lines are centred on the circle as a block; the label is drawn only if every line fits the chord at its own height inside `radius − borderWidth − padding`, otherwise nothing is drawn. Small circles are the common case, and a missing label reads better than a clipped one. The default text is the row label and the value, or the value alone.
 Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no option is needed.
@@ -108,6 +108,17 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 - Every piece that adds a test suite wires it into `npm test`; the packing piece times 10 000 circles; `tooltipPosition` is inherited; the label fit test is not exported.
 - The specs now say that proportionality and the fit hold before the spacing inset, what a dataset without a region does, that equal values may swap places when rows are permuted, where labels come from and how one is hidden, what `key` defaults to, and that there is one element per row whether or not a circle is drawn.
 - Stated instead of fixed: `ctx.parsed` is not yet filled when Chart.js builds the legend (D4), `parsing: false` is unsupported, and two requests from the issue's discussion are non-goals.
+
+**D18. The maintainer's decisions (2026-11-21).**
+
+- Its own standalone package, `chartjs-chart-circlepack`, flat only in the first release (D1, Non-Goals).
+- Chart type `circlepack`; default `spacing` 0; no anchor option; the script bundle registers on load; the fill experiment runs before publishing (D6).
+- **No zoom plugin support in 1.0**: no scales (D2).
+- **Labels are on by default**: `labels.display` defaults to `true`; a label still only appears where it fits (D9).
+- **Circles get a default 1 px border** in the chart's border colour, drawn inside the edge, so that touching circles of one colour can be told apart with no configuration. `borderWidth: 0` removes it.
+- **The first published version is 1.0.0**, what semantic-release gives a first release from `main`.
+
+Decided by recommendation and open to change in the review of this design: the original issue in the treemap repository gets a comment with a link and is closed by hand after the first release, because that note can state what the chart does not do.
 
 ## Risks / Trade-offs
 
@@ -218,7 +229,7 @@ export type CirclePackProps = { x: number; y: number; radius: number }
 // tooltipPosition is the base class's: it already returns x and y.
 export default class CirclePackElement extends Element<CirclePackProps, CirclePackOptions> {
   static readonly id = 'circlepack'
-  static readonly defaults: { borderWidth: 0; labels: CirclePackLabelsOptions }
+  static readonly defaults: { borderWidth: 1; labels: CirclePackLabelsOptions } // labels.display: true, padding: 3
   static readonly descriptors: { labels: { _fallback: true; _scriptable: (name: string) => boolean } } // all but 'formatter'
   static readonly defaultRoutes: { backgroundColor: 'backgroundColor'; borderColor: 'borderColor' }
   draw(ctx: CanvasRenderingContext2D): void // the label formatter is called with this.$context
@@ -253,11 +264,4 @@ Rules that cross pieces:
 
 ## Open Questions
 
-| # | Question | Piece | Options | Recommendation |
-|---|---|---|---|---|
-| Q1 | Zoom plugin support in the first release | P9 | none, no scales; hidden scales so that zoom works, circles becoming ellipses under one-axis zoom | None: the request never mentions zoom, and scales can be added later without changing the API. |
-| Q2 | Default of `labels.display` | P7 | `true`; `false` as in the treemap | `true`: the requested chart is labelled circles, and labels only appear where they fit. |
-| Q3 | First published version | P14 | 1.0.0, what semantic-release gives a first release; prereleases from a `next` branch first | 1.0.0: the experiment settles the one layout question that would change pixels afterwards. |
-| Q4 | How circles are told apart with no configuration: with spacing 0 and one colour per dataset, touching circles merge into one shape | P7, P9 | a default 1 px border in the chart's border colour; a different palette colour per circle; nothing, documented | A default border: no extra code, and a scriptable `backgroundColor` remains the way to colour by value. |
-
-Decided by recommendation and open to change in review of this design: the original issue in the treemap repository gets a comment with a link and is closed by hand after the first release, because that note can state what the chart does not do.
+None. The maintainer answered the four that the design raised on 2026-11-21; see D18.

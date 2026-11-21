@@ -8,6 +8,16 @@ How one circle of a `circlepack` chart is drawn, labelled, hit by the pointer an
 
 A circle SHALL be filled, with an optional border drawn inside its edge.
 
+#### Scenario: Default border
+
+- **WHEN** no border is configured
+- **THEN** each circle has a 1 px border in the chart's border colour, so that touching circles of one colour can be told apart
+
+#### Scenario: No border
+
+- **WHEN** `borderWidth` is 0
+- **THEN** no border is drawn
+
 #### Scenario: Border
 
 - **WHEN** `borderWidth` is 4
@@ -34,8 +44,13 @@ A label SHALL be drawn centred in its circle, and only when every line fits insi
 
 #### Scenario: Label fits
 
-- **WHEN** `labels.display` is true and the text fits
+- **WHEN** nothing about labels is configured and the text fits
 - **THEN** the lines are centred in the circle, horizontally and as a block vertically
+
+#### Scenario: Labels off
+
+- **WHEN** `labels.display` is false
+- **THEN** no label is drawn
 
 #### Scenario: Label does not fit
 
