@@ -9,7 +9,7 @@
 
 - [x] 2.1 Confirm with the maintainer that the SonarCloud project and `SONAR_TOKEN` exist
 - [x] 2.2 Add `.github/workflows/pr-ci.yml` and `main-ci.yml` (shared CI job only, branch `main`), `.github/dependabot.yml`, `sonar-project.properties`
-- [ ] 2.3 Read the pull request's check runs: every job ran and is green
+- [x] 2.3 Read the pull request's check runs: every job ran and is green
 
 ## 3. P3 — Front-chain packing (`feat:`)
 
