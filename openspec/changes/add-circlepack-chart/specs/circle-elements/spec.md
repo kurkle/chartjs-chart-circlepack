@@ -67,6 +67,11 @@ A label SHALL be drawn centred in its circle, and only when every line fits insi
 - **WHEN** no formatter is given and the chart has a label for the row
 - **THEN** the label is that row label and, on a second line, the value
 
+#### Scenario: Row label of several lines
+
+- **WHEN** no formatter is given and the chart's label for the row is an array
+- **THEN** each entry of that label is its own line, and the value is on the line after them
+
 #### Scenario: No row label
 
 - **WHEN** no formatter is given and the chart has no label for the row
@@ -74,7 +79,7 @@ A label SHALL be drawn centred in its circle, and only when every line fits insi
 
 #### Scenario: Hiding one label
 
-- **WHEN** `labels.display` is a function that returns false for a circle, or the formatter returns an empty string
+- **WHEN** `labels.display` is a function that returns false for a circle, or the formatter returns an empty string, null or nothing
 - **THEN** that circle has no label and the others keep theirs
 
 ### Requirement: Round pointer interaction
