@@ -36,9 +36,9 @@
 
 ## 7. P7 — Element and types (`feat:`)
 
-- [ ] 7.1 Write `src/element.test.ts` with a mock context: arc fill, inside border clamped to the radius, nothing at radius ≤ 0, `inRange` false in the box corner, `inXRange`/`inYRange`, centre point, label drawn through `drawLabel`
-- [ ] 7.2 Add `src/types.ts` with the option types and the `ChartTypeRegistry` entry
-- [ ] 7.3 Implement `CirclePackElement` in `src/element.ts` with the defaults `borderWidth: 1`, `labels.display: true`, `labels.padding: 3`
+- [x] 7.1 Write `src/element.test.ts` with a mock context: arc fill, inside border clamped to the radius, nothing at radius ≤ 0, `inRange` false in the box corner, `inXRange`/`inYRange`, centre point, label drawn through `drawLabel`
+- [x] 7.2 Add `src/types.ts` with the option types and the `ChartTypeRegistry` entry
+- [x] 7.3 Implement `CirclePackElement` in `src/element.ts` with the defaults `borderWidth: 1`, `labels.display: true`, `labels.padding: 3`
 
 ## 8. P8 — Browser fixture harness (`test:`)
 
