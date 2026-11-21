@@ -1,8 +1,8 @@
 import { createCanvas } from 'chartjs-test-utils'
 
-// Proves the browser harness before this package has a chart type: test/setup.js
-// pins the device pixel ratio, the image matcher compares pixels, and both
-// browsers rasterize the canvas alike.
+// Proves the browser harness with a built-in chart, so that it does not depend
+// on this package's chart type: test/setup.js pins the device pixel ratio, the
+// image matcher compares pixels, and both browsers rasterize the canvas alike.
 //
 // The chart draws no text and nothing antialiased: scales, legend and title are
 // hidden, and the one bar spans the whole width from the chart area's bottom to

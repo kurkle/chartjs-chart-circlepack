@@ -2,12 +2,12 @@ import type {
   CirclePackLabelsOptions,
   CirclePackOptions,
   CirclePackScriptableContext,
-} from './types'
+} from './types.js'
 
 import { Element } from 'chart.js'
 import { toFont } from 'chart.js/helpers'
 
-import { drawLabel } from './label'
+import { drawLabel } from './label.js'
 
 export type CirclePackProps = { x: number; y: number; radius: number }
 

@@ -1,6 +1,9 @@
 import { Chart, registerables } from 'chart.js'
 import { acquireChart, afterEvent, setup, triggerMouseEvent } from 'chartjs-test-utils'
 
+// Registers this package's chart type, as the script bundle does on load.
+import '../src/index'
+
 // Every Chart.js component, as a page loading the Chart.js script bundle has.
 Chart.register(...registerables)
 
