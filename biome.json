@@ -5,9 +5,14 @@
       "biome.json",
       "package.json",
       "rollup.config.js",
+      "scripts/**/*.mjs",
       "src/**/*.ts",
       "test/helpers/**/*.ts",
+      "test/setup.js",
+      "test/specs/**/*.js",
       "tsconfig.test.json",
+      "tsconfig.tooling.json",
+      "vitest.browser.config.ts",
       "vitest.config.ts"
     ]
   },

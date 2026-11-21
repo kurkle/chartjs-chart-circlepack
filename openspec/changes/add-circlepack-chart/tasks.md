@@ -42,8 +42,8 @@
 
 ## 8. P8 — Browser fixture harness (`test:`)
 
-- [ ] 8.1 Add `vitest.browser.config.ts`, `tsconfig.tooling.json`, `test/setup.js`, `test/specs/fixtures.spec.js`, `scripts/update-fixtures.mjs`, the `test:fixture` (chained into `test`) and `fixtures:update` scripts with their browser-install pre-scripts
-- [ ] 8.2 Write `test/specs/harness.spec.js`: a built-in chart type renders at device pixel ratio 1; run it in Chromium and Firefox
+- [x] 8.1 Add `vitest.browser.config.ts`, `tsconfig.tooling.json`, `test/setup.js`, `test/specs/fixtures.spec.js`, `scripts/update-fixtures.mjs`, the `test:fixture` (chained into `test`) and `fixtures:update` scripts with their browser-install pre-scripts
+- [x] 8.2 Write `test/specs/harness.spec.js`: a built-in chart type renders at device pixel ratio 1; run it in Chromium and Firefox
 
 ## 9. P9 — Controller and entry points (`feat:`)
 
