@@ -26,8 +26,8 @@
 
 ## 5. P5 — Layout, built before P4 (`feat:`)
 
-- [ ] 5.1 Write `src/layout.test.ts`: bounding box centred and touching two opposite sides, `[1]` gives diameter `min(W, H)`, `[1, 1]` in a wide and a tall rectangle, undrawable values get radius 0, permuted rows give the same set of circles, an empty rectangle gives no NaN
-- [ ] 5.2 Implement `layoutCircles` in `src/layout.ts`
+- [x] 5.1 Write `src/layout.test.ts`: bounding box centred and touching two opposite sides, `[1]` gives diameter `min(W, H)`, `[1, 1]` in a wide and a tall rectangle, undrawable values get radius 0, permuted rows give the same set of circles, an empty rectangle gives no NaN
+- [x] 5.2 Implement `layoutCircles` in `src/layout.ts`
 
 ## 6. P6 — Labels (`feat:`)
 
