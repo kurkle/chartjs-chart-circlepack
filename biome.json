@@ -1,7 +1,15 @@
 {
   "extends": ["./node_modules/@kurkle/configs/biome.json"],
   "files": {
-    "includes": ["biome.json", "package.json", "rollup.config.js", "src/**/*.ts"]
+    "includes": [
+      "biome.json",
+      "package.json",
+      "rollup.config.js",
+      "src/**/*.ts",
+      "test/helpers/**/*.ts",
+      "tsconfig.test.json",
+      "vitest.config.ts"
+    ]
   },
   "overrides": [
     {

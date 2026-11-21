@@ -13,9 +13,9 @@
 
 ## 3. P3 — Front-chain packing (`feat:`)
 
-- [ ] 3.1 Add `vitest.config.ts`, `tsconfig.test.json`, the `test:unit` script chained into `test`, and `test/helpers/random.ts`
-- [ ] 3.2 Write `src/pack.test.ts`: no pairwise overlap (n = 1, 2, 3, 50, 2000; equal radii; ratio 1e6), every circle touches another, array order untouched, repeat calls identical, 10 000 circles within a generous time bound (record the time in the pull request)
-- [ ] 3.3 Implement `packCircles` in `src/pack.ts`
+- [x] 3.1 Add `vitest.config.ts`, `tsconfig.test.json`, the `test:unit` script chained into `test`, and `test/helpers/random.ts`
+- [x] 3.2 Write `src/pack.test.ts`: no pairwise overlap (n = 1, 2, 3, 50, 2000; equal radii; ratio 1e6), every circle touches another, array order untouched, repeat calls identical, 10 000 circles within a generous time bound (record the time in the pull request)
+- [x] 3.3 Implement `packCircles` in `src/pack.ts`
 
 ## 4. P4 — Aspect-aware placement, built after P5 (`feat:`, experiment)
 

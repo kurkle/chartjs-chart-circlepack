@@ -12,9 +12,11 @@
     "@rollup/plugin-swc": "^0.4.0",
     "@rollup/plugin-terser": "^1.0.0",
     "@swc/core": "^1.11.9",
+    "@vitest/coverage-v8": "^5.1.1",
     "rollup": "^4.21.2",
     "rollup-plugin-cleanup": "^3.2.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.1"
   },
   "exports": {
     ".": {
@@ -60,9 +62,10 @@
     "lint": "biome check",
     "prepack": "npm run build",
     "prepare": "git config core.hooksPath .githooks || true",
-    "test": "npm run test:pack",
+    "test": "npm run test:unit && npm run test:pack",
     "test:pack": "kurkle-check-package",
-    "typecheck": "tsc --noEmit && tsc -p tsconfig.json --emitDeclarationOnly"
+    "test:unit": "vitest run --config vitest.config.ts --coverage",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json && tsc -p tsconfig.json --emitDeclarationOnly"
   },
   "sideEffects": [
     "dist/chartjs-chart-circlepack.cjs",

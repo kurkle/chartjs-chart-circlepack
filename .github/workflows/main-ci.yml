@@ -11,9 +11,10 @@ jobs:
   shared-ci:
     uses: kurkle/configs/.github/workflows/shared-ci.yml@v1
     with:
-      # No test produces coverage yet. An empty value skips both the upload
-      # and the Sonar job's download, which would fail on a missing artifact.
-      coverage-paths: ''
+      # The unit tests write coverage/unit/lcov.info. The wildcard keeps the
+      # unit/ directory in the artifact (a single plain path is stored as a bare
+      # lcov.info), so the Sonar job finds it at the same path after download.
+      coverage-paths: coverage/*/lcov.info
       # There are no browser tests, so the shared xvfb wrapper is not needed.
       browser-tests: false
       run-audit-signatures: true
