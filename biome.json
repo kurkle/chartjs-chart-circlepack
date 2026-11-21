@@ -1,0 +1,18 @@
+{
+  "extends": ["./node_modules/@kurkle/configs/biome.json"],
+  "files": {
+    "includes": ["biome.json", "package.json", "rollup.config.js", "src/**/*.ts"]
+  },
+  "overrides": [
+    {
+      "assist": {
+        "actions": {
+          "source": {
+            "useSortedKeys": "off"
+          }
+        }
+      },
+      "includes": ["package.json"]
+    }
+  ]
+}
