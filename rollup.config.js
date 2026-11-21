@@ -1,6 +1,6 @@
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
-import { default as swc } from '@rollup/plugin-swc'
+import swc from '@rollup/plugin-swc'
 import terser from '@rollup/plugin-terser'
 import cleanup from 'rollup-plugin-cleanup'
 
