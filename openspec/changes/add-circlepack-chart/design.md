@@ -120,6 +120,8 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 
 Decided by recommendation and open to change in the review of this design: the original issue in the treemap repository gets a comment with a link and is closed by hand after the first release, because that note can state what the chart does not do.
 
+**D19. The skeleton's entry files contain only `export {}`.** An empty file emits a declaration that is not a module, and the package check's consumer compilations fail with TS2306.
+
 ## Risks / Trade-offs
 
 - **The requester's picture fills a box; this may not.** The cluster is round unless P4 succeeds, and P4 can fail.
@@ -137,7 +139,7 @@ Sizes are estimates of changed lines without the lockfile, generated files and i
 
 | Piece | Type | Builds | Files | Failing test | Size | Waits on | Goal |
 |---|---|---|---|---|---|---|---|
-| P1 | `build:` | Package skeleton that lints, typechecks and builds three bundles and types | `package.json` (private), `rollup.config.js`, `tsconfig.json`, `biome.json`, `.gitignore`, `.editorconfig`, `.githooks/*`, empty `src/index.ts` and `src/index.esm.ts` | `npm test` runs the package check: exports, type conditions, built files | ~330 | — | advances |
+| P1 | `build:` | Package skeleton that lints, typechecks and builds three bundles and types | `package.json` (private), `rollup.config.js`, `tsconfig.json`, `biome.json`, `.gitignore`, `.editorconfig`, `.githooks/*`, `src/index.ts` and `src/index.esm.ts` containing only `export {}` (D19) | `npm test` runs the package check: exports, type conditions, built files | ~330 | — | advances |
 | P2 | `ci:` | Pull request and main CI (shared job only), dependabot, Sonar properties | `.github/workflows/{pr-ci,main-ci}.yml`, `.github/dependabot.yml`, `sonar-project.properties` | CI runs and is green on the pull request | ~140 | P1; maintainer: SonarCloud project and `SONAR_TOKEN`, then branch rules | advances |
 | P3 | `feat:` | Front-chain packing, the unit test runner in `npm test`, a seeded generator for tests | `src/pack.ts`, `src/pack.test.ts`, `test/helpers/random.ts`, `vitest.config.ts`, `tsconfig.test.json`, `package.json` | No pairwise overlap (n = 1, 2, 3, 50, 2000; equal radii; ratio 1e6); every circle touches another; repeat calls identical; 10 000 circles within a generous bound, the time recorded in the pull request | ~350 | P1 | advances |
 | P5 | `feat:` | Layout: radii, undrawable values, orientation, fit | `src/layout.ts`, `src/layout.test.ts` | Box centred and touching two opposite sides; `[1]`; `[1, 1]` in both orientations; bad values; permuted rows give the same set of circles; empty rectangle gives no NaN | ~240 | P3 | advances |

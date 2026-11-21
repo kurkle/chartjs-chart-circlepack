@@ -1,0 +1,75 @@
+{
+  "author": "Jukka Kurkela",
+  "bugs": {
+    "url": "https://github.com/kurkle/chartjs-chart-circlepack/issues"
+  },
+  "description": "Chart.js module for creating circle packing charts",
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.14",
+    "@kurkle/configs": "^1.9.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-swc": "^0.4.0",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@swc/core": "^1.11.9",
+    "rollup": "^4.21.2",
+    "rollup-plugin-cleanup": "^3.2.1",
+    "typescript": "^6.0.3"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.esm.d.ts",
+        "default": "./dist/chartjs-chart-circlepack.esm.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/chartjs-chart-circlepack.cjs"
+      },
+      "script": "./dist/chartjs-chart-circlepack.min.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "homepage": "https://github.com/kurkle/chartjs-chart-circlepack#readme",
+  "jsdelivr": "dist/chartjs-chart-circlepack.min.js",
+  "keywords": [
+    "chart.js",
+    "chart",
+    "circle packing",
+    "circlepack",
+    "bubble"
+  ],
+  "license": "MIT",
+  "main": "dist/chartjs-chart-circlepack.cjs",
+  "module": "dist/chartjs-chart-circlepack.esm.js",
+  "name": "chartjs-chart-circlepack",
+  "peerDependencies": {
+    "chart.js": ">=4.0.0"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kurkle/chartjs-chart-circlepack.git"
+  },
+  "scripts": {
+    "build": "rollup -c && tsc -p tsconfig.json --emitDeclarationOnly && kurkle-build-cjs-types",
+    "format": "biome check --write",
+    "lint": "biome check",
+    "prepack": "npm run build",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "test": "npm run test:pack",
+    "test:pack": "kurkle-check-package",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.json --emitDeclarationOnly"
+  },
+  "sideEffects": [
+    "dist/chartjs-chart-circlepack.cjs",
+    "dist/chartjs-chart-circlepack.min.js"
+  ],
+  "type": "module",
+  "types": "dist/index.esm.d.ts",
+  "unpkg": "dist/chartjs-chart-circlepack.min.js",
+  "version": "0.0.0-development"
+}

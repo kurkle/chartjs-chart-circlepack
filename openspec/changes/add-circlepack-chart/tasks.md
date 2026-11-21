@@ -1,9 +1,9 @@
 ## 1. P1 — Package skeleton (`build:`)
 
-- [ ] 1.1 Add `package.json` (private, name, description, keywords, URLs, bundle names in `exports`/`main`/`module`/`jsdelivr`/`unpkg`/`sideEffects`, peer `chart.js >=4.0.0`, scripts `build`, `lint`, `format`, `typecheck`, `test` = `test:pack`, `prepare`) so that `npm test` fails on the missing build output
-- [ ] 1.2 Add `rollup.config.js`, `tsconfig.json`, `biome.json` (only globs for existing paths), `.gitignore`, `.editorconfig`, `.githooks/*` from the sibling package
-- [ ] 1.3 Add empty `src/index.ts` and `src/index.esm.ts`
-- [ ] 1.4 Run `npm run lint`, `npm run typecheck`, `npm run build`, `npm test`
+- [x] 1.1 Add `package.json` (private, name, description, keywords, URLs, bundle names in `exports`/`main`/`module`/`jsdelivr`/`unpkg`/`sideEffects`, peer `chart.js >=4.0.0`, scripts `build`, `lint`, `format`, `typecheck`, `test` = `test:pack`, `prepare`) so that `npm test` fails on the missing build output
+- [x] 1.2 Add `rollup.config.js`, `tsconfig.json`, `biome.json` (only globs for existing paths), `.gitignore`, `.editorconfig`, `.githooks/*` from the sibling package
+- [x] 1.3 Add `src/index.ts` and `src/index.esm.ts` containing only `export {}` (an empty file emits a declaration that is not a module; see design D19)
+- [x] 1.4 Run `npm run lint`, `npm run typecheck`, `npm run build`, `npm test`
 
 ## 2. P2 — Continuous integration (`ci:`)
 
