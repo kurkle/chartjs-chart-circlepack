@@ -182,7 +182,7 @@ export function layoutCircles(values: readonly number[], rect: Rect): Circle[]
 // P6 — src/label.ts
 export type LabelFont = { string: string; lineHeight: number }
 /** Draws the lines centred on (x, y) if every line, centred as a block, fits the chord at its top and
- *  bottom edge inside `radius`; returns whether it drew. Empty input draws nothing. */
+ *  bottom edge inside `radius`; returns whether it drew. Empty input (no lines, or only empty strings) draws nothing. */
 export function drawLabel(
   ctx: CanvasRenderingContext2D, lines: readonly string[],
   x: number, y: number, radius: number, font: LabelFont, color: Color

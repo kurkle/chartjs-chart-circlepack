@@ -31,8 +31,8 @@
 
 ## 6. P6 — Labels (`feat:`)
 
-- [ ] 6.1 Write `src/label.test.ts` through `drawLabel` with a mock context: chord-fit cases for one and several lines, block centring, nothing drawn when a line is too wide or the text is empty
-- [ ] 6.2 Implement `drawLabel` in `src/label.ts`
+- [x] 6.1 Write `src/label.test.ts` through `drawLabel` with a mock context: chord-fit cases for one and several lines, block centring, nothing drawn when a line is too wide or the text is empty
+- [x] 6.2 Implement `drawLabel` in `src/label.ts`
 
 ## 7. P7 — Element and types (`feat:`)
 
