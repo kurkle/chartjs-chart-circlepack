@@ -1,8 +1,27 @@
-import type { Circle } from './pack'
+import type { ChartArea } from 'chart.js'
+import type { Circle } from './pack.js'
+import type { CirclePackRegion } from './types.js'
 
-import { packCircles } from './pack'
+import { packCircles } from './pack.js'
 
 export type Rect = { x: number; y: number; w: number; h: number }
+
+const clamp = (value: number, max: number) => Math.min(Math.max(value, 0), max)
+
+/**
+ * The part of the chart area a dataset is laid out in. The region's fractions are clamped to 0..1,
+ * `left` and `top` default to 0, and `width` and `height` default to the rest and are cut at it.
+ */
+export function regionRect(area: ChartArea, region: CirclePackRegion | undefined): Rect {
+  const left = clamp(region?.left ?? 0, 1)
+  const top = clamp(region?.top ?? 0, 1)
+  return {
+    h: area.height * clamp(region?.height ?? 1, 1 - top),
+    w: area.width * clamp(region?.width ?? 1, 1 - left),
+    x: area.left + area.width * left,
+    y: area.top + area.height * top,
+  }
+}
 
 /** The radius of a value before scaling: √v for a finite v > 0, else 0. */
 function root(value: number): number {

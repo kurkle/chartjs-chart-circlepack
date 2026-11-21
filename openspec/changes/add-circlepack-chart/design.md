@@ -33,7 +33,7 @@ Constraints that come with the template: CI is the shared workflow of `kurkle/co
 | Clipping to the chart area | own, one method | The base `getMaxOverflow()` returns `false`, which disables clipping for a dataset without scales; returning 0 clips at the chart area. |
 | `draw`, hover, tooltip position, animated properties | stock | The base `draw` skips hidden elements and draws active ones last; `nearest`/`point` use the element's `inRange`; the default tooltip positioner uses `tooltipPosition()`; `x`, `y` and `radius` are animated numbers by default. |
 
-Two Chart.js behaviours that have caused bugs in the sibling packages apply here: on an update, parsing runs before the controller's options are rebuilt, so an option read during `parse` is one update old; and `includeOptions(mode, sharedOptions)` must receive `undefined`, not an empty object, when options are not shared.
+Two Chart.js behaviours that have caused bugs in the sibling packages apply here: on an update, parsing runs before the controller's options are rebuilt, so an option read during `parse` is one update old; and `includeOptions(mode, sharedOptions)` must receive `undefined`, not an empty object, when options are not shared. The controller does not enable option sharing, so each element gets its own resolved options and the second does not arise; turning sharing on is worth it only if the benchmark shows resolving options per element to be costly on large datasets.
 
 ## Goals / Non-Goals
 
@@ -67,7 +67,7 @@ Two Chart.js behaviours that have caused bugs in the sibling packages apply here
 
 **D3. The parsed node is `{ v, x, y, r }`**: the value, the centre in canvas pixels, and the packed radius before the spacing inset. Node `i`, element `i` and row `i` share one index; packing largest-first never reorders them. Element properties are `x`, `y`, `radius`, which Chart.js animates by default.
 
-**D4. Options are read in `update()`, never in `parse()`.** `parse` only allocates nodes and marks the layout stale; `update()` runs after the options are rebuilt, reads the values through `key`, computes the rectangle from the chart area and `region`, lays out, and updates the elements. This removes the stale-option class of bugs by construction. The pack is recomputed only when the list of radii changed or the area's aspect ratio did (D6); the fit runs every time. A resized chart must equal a new chart of that size.
+**D4. Options are read in `update()`, never in `parse()`.** `parse` only allocates nodes whose position is NaN until they are laid out; `update()` runs after the options are rebuilt, reads the values through `key`, computes the rectangle from the chart area and `region`, lays out, and updates the elements. This removes the stale-option class of bugs by construction. The whole layout, pack and fit, runs on every update: Chart.js calls `update()` once per chart update and never on hover or for the tooltip, and P3 measured about 40 ms for 10 000 circles. A resized chart must equal a new chart of that size.
 One consequence is stated instead of worked around: `ctx.parsed` carries the value and geometry from the first `update()` on, but Chart.js builds the legend between `parse` and `update`, so a colour callback that the legend also uses should read the row, `ctx.raw`, which is always current.
 
 **D5. Layout.** Radius is `√v` for a finite `v > 0`, else 0. Placement is front-chain packing (Wang, Wang, Dai, Wang 2006), written in-house from the published description: circles in descending radius (ties by index), each placed tangent to two neighbours on the outer chain, the chain shortened on overlap. The fit takes the cluster's bounding box, uses it as packed or transposed, whichever scales larger into the rectangle, scales it and centres it; when both orientations scale equally, as always in a square, the cluster stays as packed. Rows with radius 0 are not packed and sit at the rectangle's centre with radius 0. There is no randomness. Proportionality and the fit are properties of the packed radius; `spacing` then insets what is drawn (D7). Equal values are told apart by row index, so permuting the rows keeps the set of circles but may swap which of two equal rows gets which place. A dataset without a `region` uses the whole chart area, so two such datasets are drawn on top of each other; the documentation says to give each a region.
@@ -87,9 +87,9 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 
 **D10. `key` defaults to `'value'`** and is resolved with Chart.js's `resolveObjectKey`, so dotted paths work. Numbers need no key.
 
-**D11. Hit testing, tooltip, legend, colours are stock.** `inRange` is the distance from the centre; the tooltip title is the row label and its body the dataset label and the value; the legend has one entry per dataset; with no colour configured all circles of a dataset share the dataset's colour, and a scriptable `backgroundColor` colours them individually.
+**D11. Hit testing, tooltip, legend, colours are stock.** `inRange` is the distance from the centre; the tooltip title is the row label and its body the dataset label and the value; the legend has one entry per dataset; with no colour configured all circles of a dataset share the dataset's colour, and a scriptable `backgroundColor` colours them individually. Whether an array-valued `backgroundColor` colours them individually is an open question (see Open Questions).
 
-**D12. Inserted rows grow in place.** `updateElements` does nothing while the layout is stale. In `update()`, after the layout, every element that has no position yet is given its final centre and radius 0 directly, and then all elements are updated in the requested mode. No list of pending resets is kept, so any number of `push`, `unshift` and `splice` calls between two updates is handled the same way. Without this a pushed row would fly in from the canvas origin.
+**D12. Inserted rows grow in place.** `updateElements` skips every row whose node is not laid out yet (its `x` is NaN), which is what Chart.js's reset of inserted rows right after `parse` meets. In `update()`, after the layout, every element that has no position yet is given its final centre and radius 0 directly, and then all elements are updated in the requested mode. No list of pending resets is kept, so any number of `push`, `unshift` and `splice` calls between two updates is handled the same way. Without this a pushed row would appear at full size at once: an animation of a property that has no value yet starts at its target.
 
 **D13. A region is given in fractions of the chart area and clipped to it silently.** `left` and `top` default to 0, `width` and `height` to the rest; all are clamped to 0..1.
 
@@ -103,7 +103,7 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 
 - A controller without scales is not clipped by Chart.js, so the controller clips to the chart area itself (D7, P9).
 - A single record of a pending reset would have lost all but the last of several inserts; elements without a position are handled in `update()` instead, and this moved from its own `fix:` piece into the controller piece (D12).
-- With aspect-aware placement the pack depends on the area's shape, so the cache key includes it and a resize must equal a new chart (D4).
+- With aspect-aware placement the pack depends on the area's shape, so a resize must equal a new chart (D4).
 - The experiment could not measure its acceptance number before the fit existed; the layout piece now comes first and the experiment's test calls it (D6, P4, P5).
 - The documentation piece was certainly over the size limit and is split into P13 and P15.
 - Every piece that adds a test suite wires it into `npm test`; the packing piece times 10 000 circles; `tooltipPosition` is inherited; the label fit test is not exported.
@@ -121,13 +121,13 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 
 Decided by recommendation and open to change in the review of this design: the original issue in the treemap repository gets a comment with a link and is closed by hand after the first release, because that note can state what the chart does not do.
 
-**D19. The skeleton's entry files contain only `export {}`.** An empty file emits a declaration that is not a module, and the package check's consumer compilations fail with TS2306.
+**D19. Until the controller piece, the skeleton's entry files contained only `export {}`.** An empty file emits a declaration that is not a module, and the package check's consumer compilations fail with TS2306.
 
 ## Risks / Trade-offs
 
 - **The requester's picture fills a box; this does only in part.** The cluster is shaped toward the area, but corners and, at 3:1, the ends stay partly empty, and at 2:1 the gain over a round cluster is unreliable below about 50 values (D6).
 - **Numerical edge cases in the front chain** (radius ratios of 1e6, thousands of equal circles) are where circle packing implementations fail. P3's tests cover them with seeded inputs and a pairwise overlap check.
-- **Cost is not measured.** A pack of n circles is about O(n√n). P3 records the time for 10 000 circles, so a too-slow algorithm shows before anything is built on it; P12 adds the benchmark of the update path. Every resize that changes the aspect ratio packs again.
+- **Cost is not measured.** A pack of n circles is about O(n√n). P3 records the time for 10 000 circles, so a too-slow algorithm shows before anything is built on it; P12 adds the benchmark of the update path. Every update packs again; the benchmark shows whether a cache is needed.
 - **The scaffold is copied, not shared.** Fixes to the template after P1 and P2 have to be carried over by hand, as between the existing sibling packages.
 - **Maintainer prerequisites can stall pieces.** P2 needs the SonarCloud project and token (whether the shared CI fails without the token is not verified). P14 needs the npm trusted publisher, the Cloudflare Pages project and the repository made public. Whether npm allows a trusted publisher to be configured before the package exists is not verified; if it does not, the first publish is a one-off by hand.
 - **P12 is wide** and close to the size limit.
@@ -149,8 +149,8 @@ Sizes are estimates of changed lines without the lockfile, generated files and i
 | P7 | `feat:` | Element and types | `src/element.ts`, `src/types.ts`, `src/element.test.ts` | With a mock context: arc fill, inside border, nothing at radius ≤ 0, `inRange` false in the box corner, centre point | ~310 | P6 | advances |
 | P8 | `test:` | Browser fixture harness in `npm test` | `vitest.browser.config.ts`, `tsconfig.tooling.json`, `test/setup.js`, `test/specs/fixtures.spec.js`, `test/specs/harness.spec.js`, `scripts/update-fixtures.mjs`, `package.json`, `biome.json` | A built-in chart renders at device pixel ratio 1 in Chromium and Firefox | ~170 | P1 | advances |
 | P9 | `feat:` | Controller (clipping and in-place growth of inserted rows included), entry points (the script bundle registers), first fixtures | `src/controller.ts`, `src/index.ts`, `src/index.esm.ts`, `test/setup.js`, `test/specs/controller.spec.js`, `test/fixtures/basic/{basic,single,fourValues}` | The fixtures need the chart type; spec: registered, node `i` is row `i`, tooltip label and value, a pushed row starts at its final centre with radius 0 | ~390 | P4, P5, P7, P8 | advances |
-| P10 | `test:` | Live-update spec | `test/specs/liveUpdate.spec.js` | Push, two pushes, `unshift` then `push`, splice, in-place edit and array replacement each equal a new chart, animation on and off, shared and scriptable options; in-place option changes apply on one update; a resize equals a new chart of that size | ~170 | P9 | advances |
-| P11 | `test:` | Remaining fixtures | `test/fixtures/{basic,events}/{objectsKey,region,regionAtEdge,twoRegions,labels,labelsTooSmall,spacing,negativeSpacing,borderWidth,zeroValues,legendScriptable,hover,tooltip}` | The fixtures themselves | ~280 | P9 | advances |
+| P10 | `test:` | Live-update spec | `test/specs/liveUpdate.spec.js` | Push, two pushes, `unshift` then `push`, splice, in-place edit and array replacement each equal a new chart, animation on and off, dataset-level and scriptable options; in-place option changes apply on one update; a resize equals a new chart of that size | ~170 | P9 | advances |
+| P11 | `test:` | Remaining fixtures | `test/fixtures/{basic,events}/{objectsKey,region,regionAtEdge,twoRegions,twoDatasetsNoRegion,labels,labelsTooSmall,spacing,negativeSpacing,borderWidth,zeroValues,legendScriptable,hover,tooltip}` | The fixtures themselves | ~280 | P9 | advances |
 | P12 | `test:` | Integration tests, type tests, benchmark smoke run in `npm test` | `test/integration/*`, `vitest.integration.config.ts`, `test/types/*`, `bench/update.mjs`, `package.json` — **wide** | The four consumers load the built package; `ChartData<'circlepack'>` type-checks; an unknown option is a type error | ~380 | P9 | advances |
 | P13 | `docs:` | Documentation site: scaffold, index and integration pages, the `basic` sample | `astro.config.mjs`, `docs/**`, `src/content.config.ts`, `src/content/docs/{index.mdx,integration.mdx,samples/basic.md}`, `package.json` (icons and logos are binary and not counted) | `npm run docs` builds; the sample's controls change the option in place and the canvas changes | ~390 | P9 | advances |
 | P15 | `docs:` | Usage page and the `labels` and `regions` samples | `src/content/docs/usage.md`, `src/content/docs/samples/{labels,regions}.md`, `astro.config.mjs` | Each sample's controls change the option in place and the canvas changes; the usage page documents every option of the type definitions | ~300 | P13, and P10 and P11 for the behaviour it documents | advances |
@@ -178,7 +178,13 @@ export type Rect = { x: number; y: number; w: number; h: number }
  *  Returns circles in canvas pixels; no NaN for any input. */
 export function layoutCircles(values: readonly number[], rect: Rect): Circle[]
 // layoutCircles passes the rectangle's long side over its short side to packCircles (P4).
-// P9 may split this into a pack cached on the radii (and the aspect) and a fit; the split stays inside src/layout.ts.
+// The layout runs on every update. If the benchmark of P12 ever shows the need for a pack cached on the radii
+// and the aspect, the cache stays inside src/layout.ts and the fit works on a copy of the cached pack.
+
+// P9 — src/layout.ts
+/** The part of the chart area a dataset is laid out in: fractions clamped to 0..1, left and top default to 0,
+ *  width and height default to the rest and are cut at it (D13). */
+export function regionRect(area: ChartArea, region: CirclePackRegion | undefined): Rect
 
 // P6 — src/label.ts
 export type LabelFont = { string: string; lineHeight: number }
@@ -246,12 +252,12 @@ export default class CirclePackElement extends Element<CirclePackProps, CirclePa
 export default class CirclePackController extends DatasetController {
   static readonly id = 'circlepack'
   static readonly defaults: { dataElementType: 'circlepack'; key: 'value'; spacing: 0 }
-  static readonly descriptors: { _indexable: false; labels: { _fallback: true; _scriptable: (name: string) => boolean } }
+  static readonly descriptors: { _indexable: false } // labels resolve through the element's descriptors
   linkScales(): void // empty
   getMaxOverflow(): number // 0: clip to the chart area
   parse(start: number, count: number): void // allocates nodes, reads no option
   update(mode: UpdateMode): void // values -> layout -> elements
-  updateElements(elements: CirclePackElement[], start: number, count: number, mode: UpdateMode): void // no-op while the layout is stale
+  updateElements(elements: CirclePackElement[], start: number, count: number, mode: UpdateMode): void // skips rows not laid out yet
   getLabelAndValue(index: number): { label: string; value: string }
 }
 // update(): after the layout, an element whose x is undefined gets { x, y, radius: 0 } directly; then updateElements(all, mode).
@@ -267,4 +273,8 @@ Rules that cross pieces:
 
 ## Open Questions
 
-None. The maintainer answered the four that the design raised on 2026-11-21; see D18.
+The maintainer answered the four that the design raised on 2026-11-21; see D18. One is open, waiting on the maintainer:
+
+- **Should an array-valued `backgroundColor` be indexed per circle?** The controller's descriptors set `_indexable: false`, as the treemap's do, where elements and rows differ. Here there is one element per row, so the pie and bar convention is possible.
+  - Not indexed (now): the whole array reaches every circle. A canvas ignores an array assigned to `fillStyle` and keeps its previous fill style, so the colour is silently wrong: measured in Chromium and Firefox, the first circle is black, the canvas default, and each later one takes the previous circle's border colour. The browser test "does not index option arrays by row" pins this.
+  - Indexed: `backgroundColor: ['red', 'blue']` colours the first circle red and the second blue. This removes `_indexable: false` from the controller's descriptors, reverses that test, and D11 and the usage page then say that arrays are indexed per circle.

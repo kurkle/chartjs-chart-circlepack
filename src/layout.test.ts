@@ -2,7 +2,7 @@ import type { Rect } from './layout'
 import type { Circle } from './pack'
 
 import { seeded } from '../test/helpers/random'
-import { layoutCircles } from './layout'
+import { layoutCircles, regionRect } from './layout'
 
 /** Relative tolerance for "touches" and "equal": far below anything a canvas can show. */
 const TOLERANCE = 1e-9
@@ -177,5 +177,36 @@ describe('layoutCircles', () => {
   it('lays out the smallest and the largest value together', () => {
     const circles = layoutCircles([Number.MAX_VALUE, Number.MIN_VALUE, 1, 2], SQUARE)
     expect(circles.every((c) => Number.isFinite(c.x) && Number.isFinite(c.y) && c.r > 0)).toBe(true)
+  })
+})
+
+describe('regionRect', () => {
+  const AREA = { bottom: 220, height: 200, left: 10, right: 410, top: 20, width: 400 }
+
+  it.each([
+    [undefined, { h: 200, w: 400, x: 10, y: 20 }],
+    [{ left: 0.5 }, { h: 200, w: 200, x: 210, y: 20 }],
+    [
+      { left: 0.75, width: 0.5 },
+      { h: 200, w: 100, x: 310, y: 20 },
+    ],
+    [
+      { left: -1, width: 0.25 },
+      { h: 200, w: 100, x: 10, y: 20 },
+    ],
+    [{ left: 2 }, { h: 200, w: 0, x: 410, y: 20 }],
+    [{ width: -1 }, { h: 200, w: 0, x: 10, y: 20 }],
+    [
+      { height: 0.5, top: 0.75 },
+      { h: 50, w: 400, x: 10, y: 170 },
+    ],
+    [
+      { height: 0.25, top: -1 },
+      { h: 50, w: 400, x: 10, y: 20 },
+    ],
+    [{ top: 2 }, { h: 0, w: 400, x: 10, y: 220 }],
+    [{ height: -1 }, { h: 0, w: 400, x: 10, y: 20 }],
+  ])('cuts the region %j to the chart area', (region, expected) => {
+    expect(regionRect(AREA, region)).toEqual(expected)
   })
 })

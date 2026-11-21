@@ -47,21 +47,26 @@
 
 ## 9. P9 — Controller and entry points (`feat:`)
 
-- [ ] 9.0 Start from a `main` that has P4, so the baselines are generated once, with the placement that ships
-- [ ] 9.1 Add `test/fixtures/basic/{basic,single,fourValues}` configs (`fourValues` is `[65, 46, 14, 11]` in a 2:1 canvas) and the `describe` line (fails: no such chart type)
-- [ ] 9.2 Write `test/specs/controller.spec.js`: the type is registered, node `i` belongs to row `i`, tooltip label and value, a pushed row starts at its final centre with radius 0
-- [ ] 9.3 Implement `CirclePackController` in `src/controller.ts`: options are read only in `update()`, `getMaxOverflow()` returns 0, `updateElements` does nothing while the layout is stale, and `update()` places elements that have no position yet
-- [ ] 9.4 Export the classes and types from both entry points; register in `src/index.ts` only
-- [ ] 9.5 Generate the baselines, look at each image, run both browsers
+- [x] 9.0 Start from a `main` that has P4, so the baselines are generated once, with the placement that ships
+- [x] 9.1 Add `test/fixtures/basic/{basic,single,fourValues}` configs (`fourValues` is `[65, 46, 14, 11]` in a 2:1 canvas) and the `describe` line (fails: no such chart type)
+- [x] 9.2 Write `test/specs/controller.spec.js`: the type is registered, node `i` belongs to row `i`, tooltip label and value, a pushed row starts at its final centre with radius 0
+- [x] 9.3 Implement `CirclePackController` in `src/controller.ts`: options are read only in `update()`, `getMaxOverflow()` returns 0, `updateElements` skips rows not laid out yet (a NaN `x` from `parse`), and `update()` places elements that have no position yet
+- [x] 9.4 Export the classes and types from both entry points; register in `src/index.ts` only
+- [x] 9.5 Generate the baselines, look at each image, run both browsers
 
 ## 10. P10 — Live-update spec (`test:`)
 
-- [ ] 10.1 Write `test/specs/liveUpdate.spec.js`: push, two pushes, `unshift` then `push`, splice, in-place edit and array replacement each equal a new chart, with animation on and off, with shared and scriptable options; `key`, `spacing`, `region` and an element option changed in place apply on one update; a resized chart equals a new chart of that size
+- [ ] 10.1 Write `test/specs/liveUpdate.spec.js`: push, two pushes, `unshift` then `push`, splice, in-place edit and array replacement each equal a new chart, with animation on and off, with dataset-level and scriptable options; `key`, `spacing`, `region` and an element option changed in place apply on one update; a resized chart equals a new chart of that size
 - [ ] 10.2 Fix in the controller whatever the spec finds, as its own commit
 
 ## 11. P11 — Remaining fixtures (`test:`)
 
-- [ ] 11.1 Add `test/fixtures/{basic,events}/{objectsKey,region,regionAtEdge,twoRegions,labels,labelsTooSmall,spacing,negativeSpacing,borderWidth,zeroValues,legendScriptable,hover,tooltip}`; `regionAtEdge` and `negativeSpacing` show that nothing is drawn outside the chart area
+- [ ] 11.1 Add `test/fixtures/{basic,events}/{objectsKey,region,regionAtEdge,twoRegions,twoDatasetsNoRegion,labels,labelsTooSmall,spacing,negativeSpacing,borderWidth,zeroValues,legendScriptable,hover,tooltip}`; `regionAtEdge` and `negativeSpacing` show that nothing is drawn outside the chart area. Also:
+  - `borderWidth` is an image fixture with an opaque, strong `borderColor` and a width of at least 2
+  - The default-ring scenario is a spec test beside it, not an image fixture: the default ring is 1 px of the chart's border colour, rgba(0, 0, 0, 0.1) by default, drawn inside the edge, too faint for an image comparison to notice if it is missing. The test draws one circle with the defaults and reads the pixels just inside the edge (alpha about 26 on the edge pixel, the fill colour one pixel further in) and checks that `borderWidth: 0` leaves the fill up to the edge
+  - `labels` must fail when only a label's text changes, in both browsers on Linux. With sprite text and the default tolerance of 0.1 % of a 512×256 canvas (131 px), one changed glyph is a few dozen pixels: changing the row label `a` of `basic/basic` to `o` passes in both browsers, and to `W` fails only in Firefox (184 px). A workable route is a longer text, for example labels of eight or more characters on a few large circles, so that a changed word differs by several hundred pixels; check it by changing one word and seeing both browsers fail. A tighter per-fixture tolerance works only if the measured difference between the browsers on that fixture stays below it, with the numbers in a comment
+  - `twoDatasetsNoRegion`: two datasets without regions overlap by design, the second drawn over the first
+  - `legendScriptable` also shows that the legend has one entry per dataset
 - [ ] 11.2 Generate the baselines, look at each image, run both browsers
 
 ## 12. P12 — Integration, types, benchmark (`test:`)
