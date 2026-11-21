@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      # Reviewing majors one at a time keeps a single blocked major
+      # (e.g. a TypeScript major) from stalling every patch grouped beside it.
+      dev-dependencies:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+    ignore:
+      # Placed ahead of the documentation site: its @astrojs/check (0.9.12)
+      # requires typescript ^5.0.0 || ^6.0.0, so a TypeScript 7 update would
+      # break npm ci with ERESOLVE once the site is added.
+      # Remove this once @astrojs/check supports TypeScript 7.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      # Reviewing majors one at a time keeps a single blocked major from
+      # stalling every patch grouped beside it.
+      actions:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
