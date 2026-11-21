@@ -7,6 +7,9 @@
  * circle closest to the origin and its successor, on the outer side. If it overlaps another chain
  * circle, the circles between are dropped from the chain and the placement is tried again against
  * the overlapped circle.
+ *
+ * With an aspect above 1, "closest" is measured with the horizontal axis compressed by the aspect,
+ * so the cluster grows wider than tall, as an ellipse of about that shape.
  */
 
 export type Circle = { x: number; y: number; r: number }
@@ -53,15 +56,17 @@ function place(a: Circle, b: Circle, c: Circle): void {
 }
 
 /**
- * The chain circle whose centre is closest to the origin. Distances equal up to rounding are a tie,
+ * The chain circle whose centre is closest to the origin, x divided by `aspect` (exact for 1, so
+ * the default measures the plain distance bit for bit). Distances equal up to rounding are a tie,
  * won by the first found from `head`, so that rounding does not decide where equal circles go.
  */
-function closest(circles: readonly Circle[], chain: Chain, head: number): number {
+function closest(circles: readonly Circle[], chain: Chain, head: number, aspect: number): number {
   let best = head
   let bestDistance = Number.POSITIVE_INFINITY
   let i = head
   do {
-    const { x, y } = circles[i]
+    const x = circles[i].x / aspect
+    const y = circles[i].y
     const distance = x * x + y * y
     if (distance < bestDistance * (1 - TIE)) {
       best = i
@@ -116,8 +121,9 @@ function shorten(
  * Packs circles so that they touch and do not overlap.
  * Precondition: every r finite and > 0. Places largest first (ties by index), first circle at the
  * origin. Writes x and y in place; the array order is untouched.
+ * `aspect` >= 1 is the target width over height of the cluster; 1, the default, makes it round.
  */
-export function packCircles(circles: Circle[]): void {
+export function packCircles(circles: Circle[], aspect = 1): void {
   const count = circles.length
   // Array.prototype.sort is stable, so equal radii keep their index order
   const order = circles.map((_, i) => i).sort((i, j) => circles[j].r - circles[i].r)
@@ -145,7 +151,7 @@ export function packCircles(circles: Circle[]): void {
   for (let k = 3; k < count; k++) {
     const index = order[k]
     const circle = circles[index]
-    let m = closest(circles, chain, head)
+    let m = closest(circles, chain, head, aspect)
     let n = chain.next[m]
     place(circles[m], circles[n], circle)
     for (let pair = shorten(circles, chain, m, n, circle); pair; ) {

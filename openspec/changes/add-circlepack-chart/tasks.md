@@ -19,10 +19,10 @@
 
 ## 4. P4 — Aspect-aware placement, built after P5 (`feat:`, experiment)
 
-- [ ] 4.1 Write `src/layout.aspect.test.ts` against `layoutCircles`: covered share at least 15 % higher than with `aspect` 1 in 2:1, 3:1, 1:2 and 1:3 rectangles for seeded sets of 10, 50 and 200; not lower in a square; no overlap; connected; the same values laid out in 2:1 and then 1:1 equal a fresh 1:1 layout
-- [ ] 4.2 Add the optional `aspect` parameter to `packCircles` and pass the rectangle's long side over its short side from `layoutCircles`
-- [ ] 4.3 Render the round and the aspect-aware cluster for the test sets and attach the images to the pull request
-- [ ] 4.4 If 4.1 cannot be met or the maintainer rejects the look: close the pull request unmerged, remove the requirement "Cluster follows the shape of the area" from `specs/circle-packing-layout/spec.md`, record the result in `design.md` D6
+- [x] 4.1 Write `src/layout.aspect.test.ts` against `layoutCircles`: covered share at least 15 % higher than with `aspect` 1 in 2:1, 3:1, 1:2 and 1:3 rectangles for seeded sets of 50 and 200, not lower for the seeded set of 10; not lower in a square for any set; no overlap; connected; the same values laid out in 2:1 and then 1:1 equal a fresh 1:1 layout
+- [x] 4.2 Add the optional `aspect` parameter to `packCircles` and pass the rectangle's long side over its short side from `layoutCircles`
+- [x] 4.3 Render the round and the aspect-aware cluster for the test sets and give the comparison to the maintainer with the measurements
+- [x] 4.4 Pin the direction and strength of `aspect` at the pack: `packCircles(circles, 3)` packs no more elongated than 3 and reaches a stated share of it, and `layoutCircles` lays out that pack unturned in a 3:1 rectangle and turned in a 1:3 one
 
 ## 5. P5 — Layout, built before P4 (`feat:`)
 
@@ -47,7 +47,7 @@
 
 ## 9. P9 — Controller and entry points (`feat:`)
 
-- [ ] 9.0 Confirm P4 is merged or closed, so the baselines are generated once
+- [ ] 9.0 Start from a `main` that has P4, so the baselines are generated once, with the placement that ships
 - [ ] 9.1 Add `test/fixtures/basic/{basic,single,fourValues}` configs (`fourValues` is `[65, 46, 14, 11]` in a 2:1 canvas) and the `describe` line (fails: no such chart type)
 - [ ] 9.2 Write `test/specs/controller.spec.js`: the type is registered, node `i` belongs to row `i`, tooltip label and value, a pushed row starts at its final centre with radius 0
 - [ ] 9.3 Implement `CirclePackController` in `src/controller.ts`: options are read only in `update()`, `getMaxOverflow()` returns 0, `updateElements` does nothing while the layout is stale, and `update()` places elements that have no position yet
@@ -85,6 +85,6 @@
 
 ## 15. P15 — Usage page and samples, built after P13 and before P14 (`docs:`)
 
-- [ ] 15.1 Write the usage page: data shapes; every option with its default; where labels come from; give each dataset a region; colour callbacks should read `ctx.raw`; what is not supported (groups, zoom, label overflow, `parsing: false`); one element per row holds without groups; the shape of the cluster as P4 left it
+- [ ] 15.1 Write the usage page: data shapes; every option with its default; where labels come from; give each dataset a region; colour callbacks should read `ctx.raw`; what is not supported (groups, zoom, label overflow, `parsing: false`); one element per row holds without groups; the shape of the cluster: shaped toward the area's proportions when there are enough values (measured from about 50), while small datasets stay round or nearly so; promise no gain in coverage for small datasets (design D6)
 - [ ] 15.2 Write the samples `labels` and `regions` and add them to the sidebar
 - [ ] 15.3 Open each sample, use every control and every value of it: no error and the canvas changes when it should

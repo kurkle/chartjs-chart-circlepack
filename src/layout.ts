@@ -11,10 +11,12 @@ function root(value: number): number {
 
 /**
  * Lays the values out as one packed cluster fitted to `rect`: values[i] -> circles[i].
- * r = k * √v for finite v > 0, else r = 0 at the rect centre. The cluster's bounding box is used as
- * packed or turned by a quarter (x and y swapped), whichever scales larger; when both scale equally,
- * as always in a square, it stays as packed. The box is centred in rect and touches two opposite
- * sides. Returns circles in canvas pixels; no NaN for any values in a finite rect with w, h >= 0.
+ * r = k * √v for finite v > 0, else r = 0 at the rect centre. The cluster is packed with
+ * aspect = long side / short side, so it is wide for a tall rect too. An empty rect gives a
+ * meaningless aspect, which is harmless: the fit then scales every circle to 0. The cluster's
+ * bounding box is used as packed or turned by a quarter (x and y swapped), whichever scales larger;
+ * when both scale equally, as always in a square, it stays as packed. The box is centred in rect
+ * and touches two opposite sides. Returns circles in canvas pixels; no NaN for any values in a finite rect with w, h >= 0.
  */
 export function layoutCircles(values: readonly number[], rect: Rect): Circle[] {
   const cx = rect.x + rect.w / 2
@@ -27,7 +29,7 @@ export function layoutCircles(values: readonly number[], rect: Rect): Circle[] {
   // packed with the largest radius 1, so that squaring the roots of huge values cannot overflow
   const circles = roots.map((r) => ({ r: r / largest, x: cx, y: cy }))
   const drawn = circles.filter((c) => c.r > 0)
-  packCircles(drawn)
+  packCircles(drawn, Math.max(rect.w, rect.h) / Math.min(rect.w, rect.h))
 
   let left = Number.POSITIVE_INFINITY
   let right = Number.NEGATIVE_INFINITY

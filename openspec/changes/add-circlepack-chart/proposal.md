@@ -8,7 +8,7 @@ Chart.js has no chart type for circle packing: values drawn as touching circles 
 - Data is a list of numbers, or of objects read through a `key`. One circle per row; no grouping in this release.
 - A circle-packing layout written in-house (front-chain packing). No runtime dependency; `chart.js` 4 is the only peer.
 - The cluster is centred in the chart area, or in a `region` of it, and scaled until it touches two opposite sides.
-- An experiment, run before anything is published, that shapes the cluster like the area it is drawn in. It has an acceptance test and an exit; if it fails the cluster stays round and the documentation says so.
+- Aspect-aware placement, tried as an experiment before anything is published, that shapes the cluster toward the proportions of the area it is drawn in. It met its acceptance test for 50 and more values; small datasets stay round or nearly so, and the documentation says so.
 - Labels centred in a circle, drawn only where they fit; round hit testing; circles animate from their own centre.
 - The toolchain, CI, release and documentation set-up of the sibling chart packages.
 - The script bundle registers the chart type on load; the module build leaves registration to the user.

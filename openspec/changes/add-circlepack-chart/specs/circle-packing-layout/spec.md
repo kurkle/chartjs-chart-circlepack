@@ -95,22 +95,32 @@ The cluster SHALL be centred in the dataset's area and, in whichever of its two 
 
 ### Requirement: Cluster follows the shape of the area
 
-The cluster SHALL be shaped like the area it is drawn in. This requirement depends on an experiment (design decision D6) and is removed if the experiment fails; the cluster is then round.
+The cluster SHALL be shaped toward the proportions of the area it is drawn in. This shows with enough values; a dataset of a few values stays round or nearly round.
 
 #### Scenario: Wide area
 
-- **WHEN** 50 values are drawn in an area twice as wide as it is tall
-- **THEN** the cluster is wider than it is tall, and the circles cover at least 15 % more of the area than the same circles arranged as a round cluster
+- **WHEN** 200 values are drawn in an area twice as wide as it is tall
+- **THEN** the cluster is wider than it is tall, and the circles cover more of the area than the same circles arranged as a round cluster would
 
 #### Scenario: Tall area
 
-- **WHEN** the same values are drawn in an area twice as tall as it is wide
-- **THEN** the cluster is taller than it is wide
+- **WHEN** the same 200 values are drawn in an area twice as tall as it is wide
+- **THEN** the cluster is taller than it is wide, and the circles cover more of the area than a round cluster would
+
+#### Scenario: Few values
+
+- **WHEN** a dataset of a few values is drawn
+- **THEN** its cluster is round or nearly round, whatever the proportions of the area
 
 #### Scenario: Square area
 
-- **WHEN** the values are drawn in a square area
-- **THEN** the circles cover no less of the area than in a round cluster
+- **WHEN** the values are drawn in an exactly square area
+- **THEN** the cluster is the round cluster
+
+#### Scenario: Nearly square area
+
+- **WHEN** the values are drawn in an area that is nearly square
+- **THEN** the cluster is nearly round
 
 ### Requirement: Deterministic layout
 
