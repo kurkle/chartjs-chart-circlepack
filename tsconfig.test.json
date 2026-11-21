@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "noEmit": true,
+    "rootDir": ".",
+    "types": ["vitest/globals"]
+  },
+  "exclude": [],
+  "extends": "./tsconfig.json",
+  "include": ["./src/**/*.test.ts", "./test/helpers/**/*.ts"]
+}
