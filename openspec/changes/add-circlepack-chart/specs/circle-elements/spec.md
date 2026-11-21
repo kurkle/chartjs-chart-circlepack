@@ -18,6 +18,11 @@ A circle SHALL be filled, with an optional border drawn inside its edge.
 - **WHEN** `backgroundColor` is a function
 - **THEN** it is called per circle with the row as `ctx.raw` and the circle's value and geometry as `ctx.parsed`
 
+#### Scenario: Scriptable colour in the legend
+
+- **WHEN** the legend is shown and `backgroundColor` is a function of `ctx.raw`
+- **THEN** the legend entry has the colour of the first circle
+
 #### Scenario: Circle smaller than its spacing
 
 - **WHEN** a circle's radius is not larger than `spacing`
@@ -25,7 +30,7 @@ A circle SHALL be filled, with an optional border drawn inside its edge.
 
 ### Requirement: Labels where they fit
 
-A label SHALL be drawn centred in its circle, and only when every line fits inside the circle.
+A label SHALL be drawn centred in its circle, and only when every line fits inside the circle. A row's label is the chart's label for that row.
 
 #### Scenario: Label fits
 
@@ -46,6 +51,16 @@ A label SHALL be drawn centred in its circle, and only when every line fits insi
 
 - **WHEN** no formatter is given and the chart has a label for the row
 - **THEN** the label is that row label and, on a second line, the value
+
+#### Scenario: No row label
+
+- **WHEN** no formatter is given and the chart has no label for the row
+- **THEN** the label is the value alone, even if the row is an object with a name of its own
+
+#### Scenario: Hiding one label
+
+- **WHEN** `labels.display` is a function that returns false for a circle, or the formatter returns an empty string
+- **THEN** that circle has no label and the others keep theirs
 
 ### Requirement: Round pointer interaction
 
@@ -79,4 +94,4 @@ Circles SHALL animate from and to their own centre.
 #### Scenario: Value change
 
 - **WHEN** a value changes and the chart is updated
-- **THEN** the circles move and resize smoothly to the new layout
+- **THEN** the circles move and resize to the new layout over the animation's duration

@@ -18,10 +18,10 @@ The package SHALL provide the `circlepack` chart type.
 - **WHEN** the module build is imported
 - **THEN** nothing is registered until the user registers the controller and the element
 
-#### Scenario: One circle per row
+#### Scenario: One element per row
 
 - **WHEN** a scriptable option or an event handler receives a data index
-- **THEN** that index is the row's index in the dataset's data
+- **THEN** that index is the row's index in the dataset's data, whether or not a circle is drawn for the row
 
 ### Requirement: Live changes
 
@@ -31,6 +31,16 @@ Changes to data and options SHALL take effect on the next update, with animation
 
 - **WHEN** rows are pushed, spliced or edited in place, or the data array is replaced, and the chart is updated
 - **THEN** the chart is the same as a new chart created with that data
+
+#### Scenario: Several insertions
+
+- **WHEN** rows are added by more than one call before the chart is updated
+- **THEN** every new circle grows in place
+
+#### Scenario: Resize
+
+- **WHEN** the chart is resized
+- **THEN** it is the same as a new chart of that size
 
 #### Scenario: Option change
 
