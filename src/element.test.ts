@@ -375,6 +375,22 @@ describe('CirclePackElement', () => {
               region: { height: 0.5, left: 0.5, top: 0.25, width: 0.5 },
               spacing: 1,
             },
+            {
+              // an array is indexed per circle
+              backgroundColor: ['red', 'blue'],
+              borderColor: ['black', 'white'],
+              borderWidth: [1, 2],
+              data: [1, 2],
+              hoverBackgroundColor: ['red', 'blue'],
+              hoverBorderColor: ['black', 'white'],
+              hoverBorderWidth: [1, 2],
+              labels: {
+                color: ['white', 'black'],
+                display: [true, false],
+                font: [{ size: 20 }, { size: 8 }],
+                padding: [1, 2],
+              },
+            },
           ],
           labels: ['a', 'b', 'c'],
         },
@@ -404,6 +420,16 @@ describe('CirclePackElement', () => {
               data: [1],
               // @ts-expect-error: the formatter is not scriptable, so it cannot return a formatter
               labels: { formatter: () => () => 'a' },
+            },
+            {
+              data: [1],
+              // @ts-expect-error: spacing is the dataset's, so it is neither indexed nor scriptable
+              spacing: [1, 2],
+            },
+            {
+              data: [1],
+              // @ts-expect-error: as is key
+              key: () => 'value',
             },
           ],
         },

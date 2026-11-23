@@ -1,4 +1,10 @@
-import type { Color, CoreChartOptions, FontSpec, Scriptable, ScriptableContext } from 'chart.js'
+import type {
+  Color,
+  CoreChartOptions,
+  FontSpec,
+  ScriptableAndArray,
+  ScriptableContext,
+} from 'chart.js'
 
 /** The parsed node of a row: its value, and its centre and packed radius in canvas pixels. */
 export type CirclePackDataPoint = { v: number; x: number; y: number; r: number }
@@ -29,16 +35,19 @@ export interface CirclePackControllerDatasetOptions {
   spacing?: number
   region?: CirclePackRegion
   label?: string
-  backgroundColor?: Scriptable<Color, CirclePackScriptableContext>
-  borderColor?: Scriptable<Color, CirclePackScriptableContext>
-  borderWidth?: Scriptable<number, CirclePackScriptableContext>
-  hoverBackgroundColor?: Scriptable<Color, CirclePackScriptableContext>
-  hoverBorderColor?: Scriptable<Color, CirclePackScriptableContext>
-  hoverBorderWidth?: Scriptable<number, CirclePackScriptableContext>
+  // an array is indexed per circle (circle i is row i): entry i is circle i's, from the start
+  // again past its end; key, spacing and region are the dataset's and take neither arrays nor
+  // functions
+  backgroundColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  borderColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  borderWidth?: ScriptableAndArray<number, CirclePackScriptableContext>
+  hoverBackgroundColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  hoverBorderColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  hoverBorderWidth?: ScriptableAndArray<number, CirclePackScriptableContext>
   labels?: {
     [K in keyof CirclePackLabelsOptions]?: K extends 'formatter'
       ? CirclePackLabelsOptions[K]
-      : Scriptable<CirclePackLabelsOptions[K], CirclePackScriptableContext>
+      : ScriptableAndArray<CirclePackLabelsOptions[K], CirclePackScriptableContext>
   }
 }
 

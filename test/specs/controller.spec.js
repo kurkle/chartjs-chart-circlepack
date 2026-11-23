@@ -265,10 +265,88 @@ describe('circlepack controller', () => {
     expect(chart.scales.x.getMatchingVisibleMetas()).toEqual([])
   })
 
-  it('does not index option arrays by row', () => {
-    const colors = ['red', 'blue']
-    const chart = circlepack({ backgroundColor: colors, data: [1, 1] })
+  it('indexes option arrays per circle, from the start again past their end', () => {
+    const chart = circlepack({
+      backgroundColor: ['rgb(255, 0, 0)', 'rgb(0, 0, 255)'],
+      borderColor: ['black', 'white'],
+      borderWidth: [0, 4],
+      data: [1, 1, 1],
+      hoverBackgroundColor: ['pink', 'gray'],
+      hoverBorderColor: ['olive', 'teal'],
+      hoverBorderWidth: [5, 6],
+      labels: {
+        color: ['green', 'yellow'],
+        display: [true, false],
+        font: [{ size: 20 }, { size: 8 }],
+        padding: [1, 2],
+      },
+    })
+    const { controller, data: elements } = chart.getDatasetMeta(0)
+    const pick = ({ options: { backgroundColor, borderColor, borderWidth, labels } }) => [
+      backgroundColor,
+      borderColor,
+      borderWidth,
+      [labels.color, labels.display, labels.font.size, labels.padding],
+    ]
+    const hover = (_element, i) => {
+      const { backgroundColor, borderColor, borderWidth } = controller.resolveDataElementOptions(
+        i,
+        'active'
+      )
+      return [backgroundColor, borderColor, borderWidth]
+    }
 
-    expect(chart.getDatasetMeta(0).data[1].options.backgroundColor).toEqual(colors)
+    expect(elements.map(pick)).toEqual([
+      ['rgb(255, 0, 0)', 'black', 0, ['green', true, 20, 1]],
+      ['rgb(0, 0, 255)', 'white', 4, ['yellow', false, 8, 2]],
+      ['rgb(255, 0, 0)', 'black', 0, ['green', true, 20, 1]],
+    ])
+    expect(elements.map(hover)).toEqual([
+      ['pink', 'olive', 5],
+      ['gray', 'teal', 6],
+      ['pink', 'olive', 5],
+    ])
+
+    const pixel = (x, y) => [...chart.ctx.getImageData(x, y, 1, 1).data].join()
+    // halfway to the edge: the fill; 2 px inside the edge: the 4 px border, or the fill without one
+    const fill = ({ radius, x, y }) => pixel(x, y - radius / 2)
+    const edge = ({ radius, x, y }) => pixel(x, y - radius + 2)
+    // the label "1" is drawn at the centre, so some pixel there differs from the fill
+    const labelled = (element) => {
+      const { x, y } = element
+      const around = []
+      for (let dx = -6; dx <= 6; dx++) {
+        for (let dy = -6; dy <= 6; dy++) {
+          around.push(pixel(Math.round(x) + dx, Math.round(y) + dy))
+        }
+      }
+      return around.some((value) => value !== fill(element))
+    }
+    expect(elements.map((element) => [fill(element), edge(element), labelled(element)])).toEqual([
+      ['255,0,0,255', '255,0,0,255', true],
+      ['0,0,255,255', '255,255,255,255', false],
+      ['255,0,0,255', '255,0,0,255', true],
+    ])
+  })
+
+  it('indexes an array a scriptable option returns per circle', () => {
+    const chart = circlepack({ backgroundColor: () => ['red', 'blue'], data: [1, 1, 1] })
+    const colors = chart.getDatasetMeta(0).data.map((element) => element.options.backgroundColor)
+
+    expect(colors).toEqual(['red', 'blue', 'red'])
+  })
+
+  it('neither indexes nor calls key, spacing and region', () => {
+    // the dataset's own options, read once per dataset: an array or a function is kept as given
+    const key = () => 'value'
+    const region = () => ({ left: 0.5 })
+    const spacing = [2, 40]
+    const left = () => 0.5
+    const { options } = circlepack({ data: [1], key, region, spacing }).getDatasetMeta(0).controller
+    const nested = circlepack({ data: [1], region: { left } }).getDatasetMeta(0).controller
+
+    expect([options.key, options.region, options.spacing]).toEqual([key, region, spacing])
+    // a region object still lays out, as 'fits the cluster to its region of the chart area' shows
+    expect(nested.options.region.left).toBe(left)
   })
 })
