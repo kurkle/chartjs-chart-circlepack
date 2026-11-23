@@ -81,7 +81,7 @@ The cluster SHALL be centred in the dataset's area and, in whichever of its two 
 #### Scenario: Two datasets without regions
 
 - **WHEN** a chart has two datasets and neither has a region
-- **THEN** both clusters fill the chart area and the second is drawn over the first
+- **THEN** both clusters fill the chart area and the first is drawn over the second, as Chart.js draws datasets in reverse `order`
 
 #### Scenario: Region outside the area
 
