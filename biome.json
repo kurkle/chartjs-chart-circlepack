@@ -3,6 +3,7 @@
   "files": {
     "includes": [
       "astro.config.mjs",
+      "bench/**/*.mjs",
       "biome.json",
       "docs/chart-runtime.js",
       "docs/scripts/**/*.cjs",
@@ -14,12 +15,18 @@
       "src/**/*.ts",
       "test/fixtures/**/*.js",
       "test/helpers/**/*.ts",
+      "test/integration/**/*.cjs",
+      "test/integration/**/*.js",
+      "test/integration/**/*.mjs",
       "test/setup.js",
       "test/specs/**/*.js",
+      "test/types/**/*.json",
+      "test/types/**/*.ts",
       "tsconfig.test.json",
       "tsconfig.tooling.json",
       "vitest.browser.config.ts",
-      "vitest.config.ts"
+      "vitest.config.ts",
+      "vitest.integration.config.ts"
     ]
   },
   "overrides": [

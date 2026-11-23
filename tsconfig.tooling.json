@@ -8,5 +8,5 @@
     "strict": true,
     "target": "ES2022"
   },
-  "include": ["./vitest.config.ts", "./vitest.browser.config.ts"]
+  "include": ["./vitest.config.ts", "./vitest.browser.config.ts", "./vitest.integration.config.ts"]
 }
