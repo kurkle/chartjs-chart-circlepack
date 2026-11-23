@@ -1,0 +1,33 @@
+---
+title: Integration
+---
+
+`chartjs-chart-circlepack` can be integrated with plain JavaScript or with different module loaders. The examples below show how to load the chart type in different systems.
+
+## Requirements
+
+- **Chart.js 4.0 or newer.**
+- ESM, CommonJS or UMD; all three builds ship in the package.
+
+## Script Tag
+
+The script bundle registers the chart type when it loads.
+
+```html
+<script src="path/to/chartjs/dist/chart.umd.js"></script>
+<script src="path/to/chartjs-chart-circlepack/dist/chartjs-chart-circlepack.min.js"></script>
+<script>
+    let myChart = new Chart(ctx, {type: 'circlepack', ...});
+</script>
+```
+
+## Bundlers (Webpack, Rollup, etc.)
+
+Importing the module build registers nothing; register the controller and the element yourself.
+
+```javascript
+import {Chart, registerables} from 'chart.js';
+import {CirclePackController, CirclePackElement} from 'chartjs-chart-circlepack';
+
+Chart.register(...registerables, CirclePackController, CirclePackElement);
+```
