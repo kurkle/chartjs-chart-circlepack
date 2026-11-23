@@ -56,8 +56,8 @@
 
 ## 10. P10 — Live-update spec (`test:`)
 
-- [ ] 10.1 Write `test/specs/liveUpdate.spec.js`: push, two pushes, `unshift` then `push`, splice, in-place edit and array replacement each equal a new chart, with animation on and off, with dataset-level and scriptable options; `key`, `spacing`, `region` and an element option changed in place apply on one update; a resized chart equals a new chart of that size
-- [ ] 10.2 Fix in the controller whatever the spec finds, as its own commit
+- [x] 10.1 Write `test/specs/liveUpdate.spec.js`: push, two pushes, `unshift` then `push`, splice, in-place edit and array replacement each equal a new chart, with animation on and off, with dataset-level and scriptable options; `key`, `spacing`, `region` and an element option changed in place apply on one update; a resized chart equals a new chart of that size
+- [x] 10.2 Fix in the controller whatever the spec finds, as its own commit (the spec found nothing to fix)
 
 ## 11. P11 — Remaining fixtures (`test:`)
 
