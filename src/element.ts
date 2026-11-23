@@ -68,7 +68,7 @@ export default class CirclePackElement extends Element<CirclePackProps, CirclePa
   declare radius: number
   declare $context: CirclePackScriptableContext
 
-  /** Fills the circle, with its border as a ring inside the edge, and the label over it. */
+  /** Fills the circle, paints its border over the fill as a ring inside the edge, and the label over both. */
   draw(ctx: CanvasRenderingContext2D): void {
     const { options, radius, x, y } = this
     if (radius <= 0) {
@@ -76,17 +76,20 @@ export default class CirclePackElement extends Element<CirclePackProps, CirclePa
     }
     const inner = radius - borderWidthOf(options.borderWidth, radius)
 
-    // the fill and the ring do not overlap, so that translucent colours do not mix
+    // The ring is painted over the fill, as Chart.js paints its own borders. A fill that stopped at
+    // the ring would leave a light seam where the two anti-aliased edges meet.
     ctx.beginPath()
-    ctx.arc(x, y, inner, 0, TAU)
+    ctx.arc(x, y, radius, 0, TAU)
     ctx.fillStyle = options.backgroundColor
     ctx.fill()
 
-    ctx.beginPath()
-    ctx.arc(x, y, radius, 0, TAU)
-    ctx.arc(x, y, inner, 0, TAU)
-    ctx.fillStyle = options.borderColor
-    ctx.fill('evenodd')
+    if (inner < radius) {
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0, TAU)
+      ctx.arc(x, y, inner, 0, TAU)
+      ctx.fillStyle = options.borderColor
+      ctx.fill('evenodd')
+    }
 
     const { labels } = options
     if (labels.display) {

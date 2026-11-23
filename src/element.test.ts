@@ -135,11 +135,14 @@ describe('CirclePackElement', () => {
       expect(visible(paints)).toEqual([{ color: 'background', from: 0, to: 20 }])
     })
 
-    it('draws the border inside the edge, not over the fill', () => {
+    it('paints the border over the fill, inside the edge', () => {
       const { paints } = draw(element(20, { borderWidth: 4 }))
       expect(paints.every((p) => p.x === X && p.y === Y)).toBe(true)
-      // nothing is painted twice, so that translucent colours do not mix
-      expect(paints.map((p) => p.to - p.from).reduce((a, b) => a + b)).toBe(20)
+      // the fill covers the whole circle, so that no seam is left where it meets the ring
+      expect(paints.map(({ color, from, to }) => ({ color, from, to }))).toEqual([
+        { color: 'background', from: 0, to: 20 },
+        { color: 'border', from: 16, to: 20 },
+      ])
       expect(visible(paints)).toEqual([
         { color: 'background', from: 0, to: 16 },
         { color: 'border', from: 16, to: 20 },
@@ -155,6 +158,8 @@ describe('CirclePackElement', () => {
       'counts a border width of %j as 0',
       (borderWidth) => {
         const { paints } = draw(element(20, { borderWidth: borderWidth as number }))
+        // no ring at all, so that the edge is not anti-aliased twice
+        expect(paints).toHaveLength(1)
         expect(visible(paints)).toEqual([{ color: 'background', from: 0, to: 20 }])
       }
     )

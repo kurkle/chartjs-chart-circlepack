@@ -25,4 +25,10 @@ export default {
       width: 512,
     },
   },
+  // Where two circles touch, their anti-aliased edges overlap, and Firefox and
+  // Chromium blend those few pixels differently. With 50 touching circles under
+  // a border painted over the fill, Firefox differs from the Chromium baseline
+  // by 223 px (0.17 %), over the default 0.1 %. 0.3 % (393 px) still fails the
+  // round cluster this fixture rules out by 21 287 px.
+  tolerance: 0.003,
 }
