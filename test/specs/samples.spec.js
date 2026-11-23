@@ -4,6 +4,7 @@
 import { normalizeCharts } from '@kurkle/astro-chartjs-editor/charts'
 import {
   getValueAtPath,
+  indexOfValue,
   initialValueFor,
   normalizeChoices,
   setValueAtPath,
@@ -52,11 +53,13 @@ async function settled(chart) {
 }
 
 // Every value of a choice other than the one it starts on, then back to that one, so that each
-// step is a change.
+// step is a change. The starting value is found as the editor finds it, so that an object value
+// equal to the one in the code counts as the same.
 function choiceSteps(choice, config) {
-  const initial = initialValueFor(choice, config)
+  const start = indexOfValue(choice.options, initialValueFor(choice, config))
+  expect(start, `${choice.path}: the code's value is one of the choices`).not.toBe(-1)
   const values = choice.options.map((option) => option.value)
-  return [...values.filter((value) => value !== initial), initial]
+  return [...values.filter((_value, i) => i !== start), values[start]]
 }
 
 // The legend and the version label draw on any chart; only a circle has a radius.
