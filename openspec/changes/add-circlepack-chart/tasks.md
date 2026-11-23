@@ -71,9 +71,9 @@
 
 ## 12. P12 — Integration, types, benchmark (`test:`)
 
-- [ ] 12.1 Add `test/integration/{browser-module,node-commonjs,node-module,webpack}` and `vitest.integration.config.ts`; each loads the built package and creates a chart; chain the scripts into `test`
-- [ ] 12.2 Add `test/types/`: `ChartData<'circlepack'>` type-checks, an unknown option is an expected error, registration type-checks
-- [ ] 12.3 Add `bench/update.mjs` with a smoke mode in `npm test`; record the time for 10 000 circles in the pull request
+- [x] 12.1 Add `test/integration/{browser-module,node-commonjs,node-module,webpack}` and `vitest.integration.config.ts`; each loads the built package and creates a chart; chain the scripts into `test`
+- [x] 12.2 Add `test/types/`: `ChartData<'circlepack'>` type-checks, an unknown option is an expected error, registration type-checks
+- [x] 12.3 Add `bench/update.mjs` with a smoke mode in `npm test`; record the time for 10 000 circles in the pull request
 
 ## 13. P13 — Documentation site (`docs:`)
 

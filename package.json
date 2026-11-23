@@ -11,6 +11,7 @@
     "@biomejs/biome": "^2.4.14",
     "@kurkle/astro-chartjs-editor": "^1.3.4",
     "@kurkle/configs": "^1.9.1",
+    "@napi-rs/canvas": "^1.2.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-swc": "^0.4.0",
@@ -30,7 +31,8 @@
     "rollup-plugin-cleanup": "^3.2.1",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
-    "vitest": "^5.1.1"
+    "vitest": "^5.1.1",
+    "webpack": "^5.113.0"
   },
   "exports": {
     ".": {
@@ -72,6 +74,7 @@
     "url": "git+https://github.com/kurkle/chartjs-chart-circlepack.git"
   },
   "scripts": {
+    "bench": "node bench/update.mjs",
     "build": "rollup -c && tsc -p tsconfig.json --emitDeclarationOnly && kurkle-build-cjs-types",
     "docs": "npm run build && astro build",
     "docs:dev": "npm run build && astro dev",
@@ -86,11 +89,17 @@
     "prepack": "npm run build",
     "prepare": "git config core.hooksPath .githooks || true",
     "pretest:fixture": "playwright install chromium firefox",
-    "test": "npm run test:unit && npm run test:fixture && npm run test:pack",
+    "pretest:integration:browser": "playwright install chromium",
+    "test": "npm run test:unit && npm run test:fixture && npm run test:integration:browser && npm run test:integration:node-commonjs && npm run test:integration:node-module && npm run test:integration:webpack && npm run test:bench && npm run test:pack",
+    "test:bench": "node bench/update.mjs --smoke",
     "test:fixture": "vitest run --config vitest.browser.config.ts --coverage",
+    "test:integration:browser": "vitest run --config vitest.integration.config.ts",
+    "test:integration:node-commonjs": "node test/integration/node-commonjs/test.cjs",
+    "test:integration:node-module": "node test/integration/node-module/test.mjs",
+    "test:integration:webpack": "node test/integration/webpack/test.mjs",
     "test:pack": "kurkle-check-package",
     "test:unit": "vitest run --config vitest.config.ts --coverage",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json && tsc -p tsconfig.json --emitDeclarationOnly && tsc --noEmit -p tsconfig.tooling.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json && tsc -p tsconfig.json --emitDeclarationOnly && tsc --noEmit -p test/types/ && tsc --noEmit -p tsconfig.tooling.json",
     "typecheck:docs": "astro check"
   },
   "sideEffects": [
