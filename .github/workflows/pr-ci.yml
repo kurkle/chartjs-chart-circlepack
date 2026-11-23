@@ -19,6 +19,9 @@ jobs:
       coverage-paths: coverage/*/lcov.info
       # Playwright's browsers are headless; the shared xvfb wrapper is not needed.
       browser-tests: false
+      # The site is built and deployed outside this workflow, so a pull request
+      # that breaks the documentation would otherwise pass. Runs after the tests.
+      extra-command: npm run docs
       fetch-depth: 1
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
