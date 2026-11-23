@@ -87,7 +87,8 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 
 **D10. `key` defaults to `'value'`** and is resolved with Chart.js's `resolveObjectKey`, so dotted paths work. Numbers need no key.
 
-**D11. Hit testing, tooltip, legend, colours are stock.** `inRange` is the distance from the centre; the tooltip title is the row label and its body the dataset label and the value; the legend has one entry per dataset; with no colour configured all circles of a dataset share the dataset's colour, and a scriptable `backgroundColor` colours them individually. Whether an array-valued `backgroundColor` colours them individually is an open question (see Open Questions).
+**D11. Hit testing, tooltip, legend, colours are stock.** `inRange` is the distance from the centre; the tooltip title is the row label and its body the dataset label and the value; the legend has one entry per dataset; with no colour configured all circles of a dataset share the dataset's colour, and a scriptable `backgroundColor` colours them individually, as does an array.
+Option arrays are indexed per circle (D18; circle `i` is row `i`): circle `i` takes entry `i`, starting again from the first entry past the end. This holds for the circle options `backgroundColor`, `borderColor`, `borderWidth`, `hoverBackgroundColor`, `hoverBorderColor`, `hoverBorderWidth` and `labels.color`, `labels.display`, `labels.font` and `labels.padding`, and for an array that a scriptable one of them returns. `labels.formatter` is a function and neither indexed nor called as a scriptable. `key`, `spacing` and `region` are the dataset's own options, read once per dataset: they are neither indexed nor scriptable, and neither is anything inside `region`, as the doughnut keeps its `spacing`. An array or a function there is kept as given, and the type definitions reject it.
 
 **D12. Inserted rows grow in place.** `updateElements` skips every row whose node is not laid out yet (its `x` is NaN), which is what Chart.js's reset of inserted rows right after `parse` meets. In `update()`, after the layout, every element that has no position yet is given its final centre and radius 0 directly, and then all elements are updated in the requested mode. No list of pending resets is kept, so any number of `push`, `unshift` and `splice` calls between two updates is handled the same way. Without this a pushed row would appear at full size at once: an animation of a property that has no value yet starts at its target.
 
@@ -110,7 +111,7 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 - The specs now say that proportionality and the fit hold before the spacing inset, what a dataset without a region does, that equal values may swap places when rows are permuted, where labels come from and how one is hidden, what `key` defaults to, and that there is one element per row whether or not a circle is drawn.
 - Stated instead of fixed: `ctx.parsed` is not yet filled when Chart.js builds the legend (D4), `parsing: false` is unsupported, and two requests from the issue's discussion are non-goals.
 
-**D18. The maintainer's decisions (2026-11-21).**
+**D18. The maintainer's decisions (2026-11-21, and the last one 2026-11-23).**
 
 - Its own standalone package, `chartjs-chart-circlepack`, flat only in the first release (D1, Non-Goals).
 - Chart type `circlepack`; default `spacing` 0; no anchor option; the script bundle registers on load; the fill experiment ran before publishing, and the maintainer took aspect-aware placement with a corrected acceptance criterion (D6).
@@ -118,6 +119,7 @@ Row labels come from `chart.data.labels[i]`, the pie and doughnut convention; no
 - **Labels are on by default**: `labels.display` defaults to `true`; a label still only appears where it fits (D9).
 - **Circles get a default 1 px border** in the chart's border colour, drawn inside the edge, so that touching circles of one colour can be told apart with no configuration. `borderWidth: 0` removes it.
 - **The first published version is 1.0.0**, what semantic-release gives a first release from `main`.
+- **Option arrays are indexed per circle** (2026-11-23), the pie and bar convention, since there is one element per row: `backgroundColor: ['red', 'blue']` colours circle 0 red and circle 1 blue. Which options this covers is in D11 (P16).
 
 Decided by recommendation and open to change in the review of this design: the original issue in the treemap repository gets a comment with a link and is closed by hand after the first release, because that note can state what the chart does not do.
 
@@ -153,10 +155,11 @@ Sizes are estimates of changed lines without the lockfile, generated files and i
 | P11 | `test:` | Remaining fixtures | `test/fixtures/{basic,events}/{objectsKey,region,regionAtEdge,twoRegions,twoDatasetsNoRegion,labels,labelsTooSmall,spacing,negativeSpacing,borderWidth,zeroValues,legendScriptable,hover,tooltip}` | The fixtures themselves | ~280 | P9 | advances |
 | P12 | `test:` | Integration tests, type tests, benchmark smoke run in `npm test` | `test/integration/*`, `vitest.integration.config.ts`, `test/types/*`, `bench/update.mjs`, `package.json` — **wide** | The four consumers load the built package; `ChartData<'circlepack'>` type-checks; an unknown option is a type error | ~380 | P9 | advances |
 | P13 | `docs:` | Documentation site: scaffold, index and integration pages, the `basic` sample | `astro.config.mjs`, `docs/**`, `src/content.config.ts`, `src/content/docs/{index.mdx,integration.mdx,samples/basic.md}`, `package.json` (icons and logos are binary and not counted) | `npm run docs` builds; the sample's controls change the option in place and the canvas changes | ~390 | P9 | advances |
-| P15 | `docs:` | Usage page and the `labels` and `regions` samples | `src/content/docs/usage.md`, `src/content/docs/samples/{labels,regions}.md`, `astro.config.mjs` | Each sample's controls change the option in place and the canvas changes; the usage page documents every option of the type definitions | ~300 | P13, and P10 and P11 for the behaviour it documents | advances |
-| P14 | `feat:` | Publish: remove `private`; add the release and docs-deploy jobs and `.releaserc.json`; readme with real usage | `package.json`, `.github/workflows/main-ci.yml`, `.releaserc.json`, `README.md` | The release job on `main` publishes the first version | ~150 | P10–P13, P15; maintainer: npm trusted publisher bound to `main-ci.yml`, Cloudflare Pages project and secrets, repository public | **completes** |
+| P16 | `feat:` | Option arrays indexed per circle (D18) | `src/controller.ts`, `src/types.ts`, `src/element.test.ts`, `test/specs/controller.spec.js`, this design, `tasks.md`, `specs/circle-elements/spec.md` | Array-valued circle options, the hover ones and `labels` included, give circle `i` entry `i`, from the start again past the end, in the resolved options and in the pixels (fill, border, label shown or not); so does an array a scriptable returns; `key`, `spacing` and `region` stay neither indexed nor scriptable; the typed dataset in `src/element.test.ts` accepts the arrays and rejects them for `key` and `spacing` | ~200 | P9 | advances |
+| P15 | `docs:` | Usage page and the `labels` and `regions` samples | `src/content/docs/usage.md`, `src/content/docs/samples/{labels,regions}.md`, `astro.config.mjs` | Each sample's controls change the option in place and the canvas changes; the usage page documents every option of the type definitions | ~300 | P13, and P10, P11 and P16 for the behaviour it documents | advances |
+| P14 | `feat:` | Publish: remove `private`; add the release and docs-deploy jobs and `.releaserc.json`; readme with real usage | `package.json`, `.github/workflows/main-ci.yml`, `.releaserc.json`, `README.md` | The release job on `main` publishes the first version | ~150 | P10–P13, P15, P16; maintainer: npm trusted publisher bound to `main-ci.yml`, Cloudflare Pages project and secrets, repository public | **completes** |
 
-**Order.** Pieces are numbered as designed and never renumbered; the build order is the order of the table. The layout path is P1 → P3 → P5 → P4. P2 and P8 start once P1 is merged and are not on that path (P3 and P8 both edit `package.json` and `biome.json`, so the second rebases). P6 → P7 runs beside P5 → P4. P9 joins P4, P5, P7 and P8, so that baselines are generated once, with the placement that ships. P10, P11, P12 and P13 run in parallel after P9 (P12 and P13 both add scripts to `package.json`); P15 follows P13. P14 is last.
+**Order.** Pieces are numbered as designed and never renumbered; the build order is the order of the table. The layout path is P1 → P3 → P5 → P4. P2 and P8 start once P1 is merged and are not on that path (P3 and P8 both edit `package.json` and `biome.json`, so the second rebases). P6 → P7 runs beside P5 → P4. P9 joins P4, P5, P7 and P8, so that baselines are generated once, with the placement that ships. P10, P11, P12 and P13 run in parallel after P9 (P12 and P13 both add scripts to `package.json`). P16 was added after the maintainer's decision of 2026-11-23 and also follows P9 (it and P10 both tick boxes in `tasks.md`, so the second rebases); P15 follows P13 and P16. P14 is last.
 
 ## Contracts
 
@@ -211,14 +214,15 @@ export interface CirclePackOptions {
 }
 export interface CirclePackControllerDatasetOptions {
   key?: string; spacing?: number; region?: CirclePackRegion; label?: string
-  backgroundColor?: Scriptable<Color, CirclePackScriptableContext>
-  borderColor?: Scriptable<Color, CirclePackScriptableContext>
-  borderWidth?: Scriptable<number, CirclePackScriptableContext>
-  hoverBackgroundColor?: Scriptable<Color, CirclePackScriptableContext>
-  hoverBorderColor?: Scriptable<Color, CirclePackScriptableContext>
-  hoverBorderWidth?: Scriptable<number, CirclePackScriptableContext>
+  // P16: an array is indexed per circle (D11)
+  backgroundColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  borderColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  borderWidth?: ScriptableAndArray<number, CirclePackScriptableContext>
+  hoverBackgroundColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  hoverBorderColor?: ScriptableAndArray<Color, CirclePackScriptableContext>
+  hoverBorderWidth?: ScriptableAndArray<number, CirclePackScriptableContext>
   labels?: { [K in keyof CirclePackLabelsOptions]?: K extends 'formatter'
-    ? CirclePackLabelsOptions[K] : Scriptable<CirclePackLabelsOptions[K], CirclePackScriptableContext> }
+    ? CirclePackLabelsOptions[K] : ScriptableAndArray<CirclePackLabelsOptions[K], CirclePackScriptableContext> }
 }
 declare module 'chart.js' {
   interface ChartTypeRegistry {
@@ -252,7 +256,12 @@ export default class CirclePackElement extends Element<CirclePackProps, CirclePa
 export default class CirclePackController extends DatasetController {
   static readonly id = 'circlepack'
   static readonly defaults: { dataElementType: 'circlepack'; key: 'value'; spacing: 0 }
-  static readonly descriptors: { _indexable: false } // labels resolve through the element's descriptors
+  // P16: stock but for the dataset's own options (D11): key, spacing and region are neither indexed nor
+  // scriptable, nor is anything inside region; labels resolve through the element's descriptors
+  static readonly descriptors: {
+    _indexable: (name: string) => boolean; _scriptable: (name: string) => boolean
+    region: { _indexable: false; _scriptable: false }
+  }
   linkScales(): void // empty
   getMaxOverflow(): number // 0: clip to the chart area
   parse(start: number, count: number): void // allocates nodes, reads no option
@@ -273,8 +282,4 @@ Rules that cross pieces:
 
 ## Open Questions
 
-The maintainer answered the four that the design raised on 2026-11-21; see D18. One is open, waiting on the maintainer:
-
-- **Should an array-valued `backgroundColor` be indexed per circle?** The controller's descriptors set `_indexable: false`, as the treemap's do, where elements and rows differ. Here there is one element per row, so the pie and bar convention is possible.
-  - Not indexed (now): the whole array reaches every circle. A canvas ignores an array assigned to `fillStyle` and keeps its previous fill style, so the colour is silently wrong: measured in Chromium and Firefox, the first circle is black, the canvas default, and each later one takes the previous circle's border colour. The browser test "does not index option arrays by row" pins this.
-  - Indexed: `backgroundColor: ['red', 'blue']` colours the first circle red and the second blue. This removes `_indexable: false` from the controller's descriptors, reverses that test, and D11 and the usage page then say that arrays are indexed per circle.
+None. The maintainer answered the four that the design raised on 2026-11-21, and on 2026-11-23 the fifth, whether option arrays are indexed per circle; see D18.

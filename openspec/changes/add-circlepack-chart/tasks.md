@@ -90,6 +90,13 @@
 
 ## 15. P15 — Usage page and samples, built after P13 and before P14 (`docs:`)
 
-- [ ] 15.1 Write the usage page: data shapes; every option with its default; where labels come from; give each dataset a region; colour callbacks should read `ctx.raw`; what is not supported (groups, zoom, label overflow, `parsing: false`); one element per row holds without groups; the shape of the cluster: shaped toward the area's proportions when there are enough values (measured from about 50), while small datasets stay round or nearly so; promise no gain in coverage for small datasets (design D6)
+- [ ] 15.1 Write the usage page: data shapes; every option with its default; where labels come from; give each dataset a region; colour callbacks should read `ctx.raw`; an option array is indexed per circle for `backgroundColor`, `borderColor`, `borderWidth`, the three hover options and `labels.color`, `labels.display`, `labels.font` and `labels.padding`, but not for `key`, `spacing` and `region`, which take neither arrays nor functions (design D11); what is not supported (groups, zoom, label overflow, `parsing: false`); one element per row holds without groups; the shape of the cluster: shaped toward the area's proportions when there are enough values (measured from about 50), while small datasets stay round or nearly so; promise no gain in coverage for small datasets (design D6)
 - [ ] 15.2 Write the samples `labels` and `regions` and add them to the sidebar
 - [ ] 15.3 Open each sample, use every control and every value of it: no error and the canvas changes when it should
+
+## 16. P16 — Option arrays indexed per circle, built after P9 and before P15 (`feat:`)
+
+- [x] 16.1 Reverse the browser test "does not index option arrays by row": array-valued `backgroundColor`, `borderColor`, `borderWidth`, `hoverBackgroundColor`, `hoverBorderColor`, `hoverBorderWidth` and `labels.color`, `labels.display`, `labels.font`, `labels.padding` give circle `i` entry `i`, from the start again past the end, in the resolved options and in the pixels (fill, border, label shown or not); an array a scriptable returns is indexed the same way
+- [x] 16.2 Replace `_indexable: false` in the controller's descriptors with descriptors that keep everything stock but `key`, `spacing` and `region` (and what `region` holds), which are neither indexed nor scriptable; a browser test pins that an array or a function there is kept as given
+- [x] 16.3 Let the type definitions accept the arrays for the circle options (`ScriptableAndArray`); the typed dataset in `src/element.test.ts` accepts them and rejects an array `spacing` and a function `key`
+- [x] 16.4 Record the decision in the design (D11, D18, the contracts, Open Questions) and add a scenario to the circle-elements spec

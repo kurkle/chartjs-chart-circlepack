@@ -28,6 +28,16 @@ A circle SHALL be filled, with an optional border drawn inside its edge.
 - **WHEN** `backgroundColor` is a function
 - **THEN** it is called per circle with the row as `ctx.raw` and the circle's value and geometry as `ctx.parsed`
 
+#### Scenario: Colour array
+
+- **WHEN** `backgroundColor`, `borderColor`, `borderWidth`, `hoverBackgroundColor`, `hoverBorderColor`, `hoverBorderWidth`, `labels.color`, `labels.display`, `labels.font` or `labels.padding` is an array, or a function that returns one
+- **THEN** circle `i` takes entry `i`, starting again from the first entry past the end
+
+#### Scenario: Dataset options are not per circle
+
+- **WHEN** `key`, `spacing` or `region` is an array or a function
+- **THEN** it is neither indexed nor called
+
 #### Scenario: Scriptable colour in the legend
 
 - **WHEN** the legend is shown and `backgroundColor` is a function of `ctx.raw`

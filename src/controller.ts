@@ -13,6 +13,9 @@ function rowValue(row: unknown, key: string): number {
   return typeof value === 'number' ? value : Number.NaN
 }
 
+/** The options a dataset has as a whole, rather than per circle. */
+const DATASET_OPTIONS = new Set(['key', 'region', 'spacing'])
+
 type Options = { key: string; region?: CirclePackRegion; spacing: number }
 
 export default class CirclePackController extends DatasetController<
@@ -23,8 +26,15 @@ export default class CirclePackController extends DatasetController<
 
   static readonly defaults = { dataElementType: 'circlepack', key: 'value', spacing: 0 }
 
-  // `labels` needs no entry here: the element's descriptors resolve it at every level.
-  static readonly descriptors = { _indexable: false }
+  // Every option but the dataset's own is stock: an array is indexed per circle (circle i is row
+  // i), as in a pie chart, and `labels` resolves through the element's descriptors. The dataset's
+  // own options are read once per dataset, so an array or a function there is kept as given, as
+  // the doughnut keeps its `spacing`; `region` also for what it holds.
+  static readonly descriptors = {
+    _indexable: (name: string) => !DATASET_OPTIONS.has(name) && name !== 'events',
+    _scriptable: (name: string) => !DATASET_OPTIONS.has(name) && !name.startsWith('on'),
+    region: { _indexable: false, _scriptable: false },
+  }
 
   // Chart.js sets this in configure(); its type definitions do not describe it.
   declare options: Options
