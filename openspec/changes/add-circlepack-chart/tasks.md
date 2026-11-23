@@ -65,7 +65,7 @@
   - `borderWidth` is an image fixture with an opaque, strong `borderColor` and a width of at least 2
   - The default-ring scenario is a spec test beside it, not an image fixture: the default ring is 1 px of the chart's border colour, rgba(0, 0, 0, 0.1) by default, drawn inside the edge, too faint for an image comparison to notice if it is missing. The test draws one circle with the defaults and reads the pixels just inside the edge (alpha about 26 on the edge pixel, the fill colour one pixel further in) and checks that `borderWidth: 0` leaves the fill up to the edge
   - `labels` must fail when only a label's text changes, in both browsers on Linux. With sprite text and the default tolerance of 0.1 % of a 512×256 canvas (131 px), one changed glyph is a few dozen pixels: changing the row label `a` of `basic/basic` to `o` passes in both browsers, and to `W` fails only in Firefox (184 px). A workable route is a longer text, for example labels of eight or more characters on a few large circles, so that a changed word differs by several hundred pixels; check it by changing one word and seeing both browsers fail. A tighter per-fixture tolerance works only if the measured difference between the browsers on that fixture stays below it, with the numbers in a comment
-  - `twoDatasetsNoRegion`: two datasets without regions overlap by design, the second drawn over the first
+  - `twoDatasetsNoRegion`: two datasets without regions overlap by design, the first drawn over the second (Chart.js draws datasets in reverse `order`)
   - `legendScriptable` also shows that the legend has one entry per dataset
 - [x] 11.2 Generate the baselines, look at each image, run both browsers
 
