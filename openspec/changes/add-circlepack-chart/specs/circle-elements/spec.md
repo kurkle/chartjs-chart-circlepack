@@ -22,6 +22,12 @@ A circle SHALL be filled, with an optional border drawn inside its edge.
 
 - **WHEN** `borderWidth` is 4
 - **THEN** a 4 px ring in `borderColor` lies inside the circle and neighbouring circles still touch at their outer edges
+- **THEN** no pixel where the ring meets the fill is lighter or more transparent than both
+
+#### Scenario: Translucent border
+
+- **WHEN** `borderColor` is translucent
+- **THEN** the ring is painted over the fill, so the fill shows through it, as with the borders of Chart.js's own elements
 
 #### Scenario: Scriptable colour
 

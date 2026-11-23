@@ -25,4 +25,9 @@ export default {
     // so whether a label fits is the same everywhere
     spriteText: true,
   },
+  // Where two circles touch, their anti-aliased edges overlap, and Firefox and
+  // Chromium blend those few pixels differently. With the border painted over
+  // the fill, Firefox differs from the Chromium baseline by 140 px (0.11 %),
+  // over the default 0.1 %. 0.2 % is 262 px.
+  tolerance: 0.002,
 }
