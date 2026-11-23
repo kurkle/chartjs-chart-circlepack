@@ -17,6 +17,7 @@ const specsFromFixtures = createFixtures({ configs, images, prefix: '../fixtures
 
 describe('fixtures', () => {
   describe('basic', specsFromFixtures('basic'))
+  describe('events', specsFromFixtures('events'))
 })
 
 describe('fixture files', () => {
