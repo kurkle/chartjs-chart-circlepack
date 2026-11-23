@@ -90,9 +90,9 @@
 
 ## 15. P15 — Usage page and samples, built after P13 and before P14 (`docs:`)
 
-- [ ] 15.1 Write the usage page: data shapes; every option with its default; where labels come from; give each dataset a region; colour callbacks should read `ctx.raw`; an option array is indexed per circle for `backgroundColor`, `borderColor`, `borderWidth`, the three hover options and `labels.color`, `labels.display`, `labels.font` and `labels.padding`, but not for `key`, `spacing` and `region`, which take neither arrays nor functions (design D11); what is not supported (groups, zoom, label overflow, `parsing: false`); one element per row holds without groups; the shape of the cluster: shaped toward the area's proportions when there are enough values (measured from about 50), while small datasets stay round or nearly so; promise no gain in coverage for small datasets (design D6)
-- [ ] 15.2 Write the samples `labels` and `regions` and add them to the sidebar
-- [ ] 15.3 Open each sample, use every control and every value of it: no error and the canvas changes when it should
+- [x] 15.1 Write the usage page: data shapes; every option with its default; where labels come from; give each dataset a region; colour callbacks should read `ctx.raw`; an option array is indexed per circle for `backgroundColor`, `borderColor`, `borderWidth`, the three hover options and `labels.color`, `labels.display`, `labels.font` and `labels.padding`, but not for `key`, `spacing` and `region`, which take neither arrays nor functions (design D11); what is not supported (groups, zoom, label overflow, `parsing: false`); one element per row holds without groups; the shape of the cluster: shaped toward the area's proportions when there are enough values (measured from about 50), while small datasets stay round or nearly so; promise no gain in coverage for small datasets (design D6)
+- [x] 15.2 Write the samples `labels` and `regions` and add them to the sidebar
+- [x] 15.3 Open each sample, use every control and every value of it: no error and the canvas changes when it should
 
 ## 16. P16 — Option arrays indexed per circle, built after P9 and before P15 (`feat:`)
 

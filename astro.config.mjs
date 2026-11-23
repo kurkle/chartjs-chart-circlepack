@@ -40,11 +40,16 @@ export default defineConfig({
           items: [
             { label: 'Getting Started', link: '/' },
             { label: 'Integration', link: '/integration/' },
+            { label: 'Usage', link: '/usage/' },
           ],
           label: 'Guide',
         },
         {
-          items: [{ label: 'Basic', link: '/samples/basic/' }],
+          items: [
+            { label: 'Basic', link: '/samples/basic/' },
+            { label: 'Labels', link: '/samples/labels/' },
+            { label: 'Regions', link: '/samples/regions/' },
+          ],
           label: 'Samples',
         },
         {
