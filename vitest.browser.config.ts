@@ -62,7 +62,7 @@ export default defineConfig({
     // configured. Instrumenting the source instead keeps both browsers in one
     // run and merges their results.
     coverage: {
-      exclude: ['**/*.test.ts'],
+      exclude: ['**/*.test.ts', 'src/content.config.ts'],
       include: ['src/**/*.ts'],
       provider: 'istanbul',
       reporter: ['text-summary', 'lcov'],

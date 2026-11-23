@@ -77,9 +77,9 @@
 
 ## 13. P13 — Documentation site (`docs:`)
 
-- [ ] 13.1 Add `astro.config.mjs`, `docs/`, `src/content.config.ts`, the index and integration pages, the `docs` scripts
-- [ ] 13.2 Write the sample `basic`
-- [ ] 13.3 Open the sample, use every control and every value of it: no error and the canvas changes when it should
+- [x] 13.1 Add `astro.config.mjs`, `docs/`, `src/content.config.ts`, the index and integration pages, the `docs` scripts
+- [x] 13.2 Write the sample `basic`
+- [x] 13.3 Open the sample, use every control and every value of it: no error and the canvas changes when it should
 
 ## 14. P14 — Publish (`feat:`)
 
