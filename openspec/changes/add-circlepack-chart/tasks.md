@@ -83,9 +83,9 @@
 
 ## 14. P14 — Publish (`feat:`)
 
-- [ ] 14.1 Confirm with the maintainer: npm trusted publisher bound to `main-ci.yml`, Cloudflare Pages project and secrets, repository public
-- [ ] 14.2 Add `.releaserc.json` and run its commit analysis and note generation against this repository's history locally
-- [ ] 14.3 Remove `"private"`, add the release and docs-deploy jobs to `main-ci.yml`, write the readme with installation and usage
+- [x] 14.1 Confirm with the maintainer: npm trusted publisher bound to `main-ci.yml`, Cloudflare Pages project and secrets, repository public
+- [x] 14.2 Add `.releaserc.json` and run its commit analysis and note generation against this repository's history locally
+- [x] 14.3 Remove `"private"`, add the release and docs-deploy jobs to `main-ci.yml`, write the readme with installation and usage
 - [ ] 14.4 After the merge, read the version from the npm registry and open the published documentation
 
 ## 15. P15 — Usage page and samples, built after P13 and before P14 (`docs:`)
