@@ -5,6 +5,7 @@ import type { CirclePackDataPoint, CirclePackRegion } from './types.js'
 import { DatasetController } from 'chart.js'
 import { resolveObjectKey } from 'chart.js/helpers'
 
+import { formatValue } from './format.js'
 import { layoutCircles, regionRect } from './layout.js'
 
 /** NaN for anything that is not a number, so that a node's `v` is always a number. */
@@ -121,7 +122,7 @@ export default class CirclePackController extends DatasetController<
       // Anything else is text: the tooltip shows no title for a falsy label, so a label of 0,
       // which the circle shows, must arrive as '0'.
       label: (Array.isArray(label) ? label : `${label ?? ''}`) as string,
-      value: this.getParsed(index).v.toLocaleString(options.locale),
+      value: formatValue(this.getParsed(index).v, options.locale),
     }
   }
 }
