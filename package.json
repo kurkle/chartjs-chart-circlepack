@@ -25,10 +25,12 @@
     "astro": "^7.4.13",
     "chart.js": "^4.4.5",
     "chartjs-test-utils": "^1.1.1",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "playwright": "^1.63.0",
     "png-to-ico": "^3.0.2",
     "rollup": "^4.21.2",
     "rollup-plugin-cleanup": "^3.2.1",
+    "semantic-release": "^25.0.9",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "vitest": "^5.1.1",
@@ -68,7 +70,6 @@
   "peerDependencies": {
     "chart.js": ">=4.0.0"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kurkle/chartjs-chart-circlepack.git"
