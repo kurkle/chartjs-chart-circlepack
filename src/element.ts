@@ -7,6 +7,7 @@ import type {
 import { Element } from 'chart.js'
 import { toFont } from 'chart.js/helpers'
 
+import { formatValue } from './format.js'
 import { drawLabel } from './label.js'
 
 export type CirclePackProps = { x: number; y: number; radius: number }
@@ -28,8 +29,7 @@ function toLines(value: unknown): string[] {
  * value alone when the row has no label.
  */
 function formatter(ctx: CirclePackScriptableContext): string | string[] {
-  // in V8 this is faster than chart.js formatNumber, and it takes an undefined locale
-  const value = ctx.parsed.v.toLocaleString(ctx.chart.options.locale)
+  const value = formatValue(ctx.parsed.v, ctx.chart.options.locale)
   const lines = toLines(ctx.chart.data.labels?.[ctx.dataIndex])
   return lines.length ? [...lines, value] : value
 }
